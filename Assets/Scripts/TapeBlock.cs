@@ -17,6 +17,8 @@ public class TapeBlock : MonoBehaviour
     
     bool hold = true;
     
+    bool playMusic = true;
+    
     public void SetNotHolding()
     {
         hold = false;
@@ -56,7 +58,11 @@ public class TapeBlock : MonoBehaviour
                 
                 this.transform.position = Vector3.MoveTowards(this.transform.position, targetPos, speed / 100.0f);
                 
-                GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>().PlayBlockSE();
+                if (playMusic)
+                {
+                    GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>().PlayBlockSE();
+                    playMusic = false;
+                }
             }
             else
             {
@@ -69,6 +75,22 @@ public class TapeBlock : MonoBehaviour
         else
         {
             
+        }
+    }
+    
+    private void OnTriggerEnter(Collider other) 
+    {
+        if (other.gameObject.tag == "Tape")
+        {
+            hold = true;
+        }
+    }
+    
+    private void OnTriggerExit(Collider other) 
+    {
+        if (other.gameObject.tag == "Tape")
+        {
+            hold = false;
         }
     }
 }
