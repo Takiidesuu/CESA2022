@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - LeftPoint
+  - UpPoint
+  - DownPoint
+  - RightPoint
+  - Ground
+  - Tape
+  - BROCK
+  - Slider
+  - TapeBlock
+  - PauseManager
+  - RadarCheck
+  - TapeBlockFall
+  - InputManager
+  - Stone
+  - Canvas
+  - Enemy
+  - RadarObj
+  - EffectManager
+  - AudioManager
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - Ground
+  - Water
+  - UI
+  - 
+  - TapeBlock
+  - Stone
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0

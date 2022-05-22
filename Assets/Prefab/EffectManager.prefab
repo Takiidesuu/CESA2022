@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8218306309145748788
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8218306309145748790}
+  - component: {fileID: 8218306309145748791}
+  m_Layer: 0
+  m_Name: EffectManager
+  m_TagString: EffectManager
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8218306309145748790
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8218306309145748788}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.03341168, y: 7.3386917, z: 2.2602882}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8218306309145748791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8218306309145748788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf4ef216cf3bc504b8bb35775ac8d72c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rockPartObj: {fileID: 5511539963299612794, guid: 0bdb195deca57894d8d2ae5425ee46eb, type: 3}
+  tapePartObj: {fileID: 5511539963299612794, guid: 0bdb195deca57894d8d2ae5425ee46eb, type: 3}
+  stonePartObj: {fileID: 613739443065021445, guid: b7ba12fcbe1f79546b186c0a33637bbf, type: 3}
+  getStonePartObj: {fileID: 8100256627072313804, guid: 3425f2cb973b9e044861d34a83142bd2, type: 3}
