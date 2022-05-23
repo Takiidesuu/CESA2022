@@ -111,6 +111,8 @@ public class TapeScript : MonoBehaviour
             }
             
             canPull = false;
+            
+            GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>().PlayTearSE();
         }
         
         if (fastPull)
@@ -164,6 +166,11 @@ public class TapeScript : MonoBehaviour
         //剥がししろ用の変数を初期化
         pointObj = new GameObject[4];
         pointCol = new BoxCollider[4];
+
+        //敵の変数をタグ付け
+        Dguu = GameObject.FindWithTag("sikaku");
+        Spyder = GameObject.FindWithTag("spyder");
+        KabeKnight = GameObject.FindWithTag("soad");
 
         DouzouGetflag = false;
         SpyderGetflag = false;
@@ -353,6 +360,8 @@ public class TapeScript : MonoBehaviour
                     GameObject tapePart = Instantiate(GameObject.FindGameObjectWithTag("EffectManager").GetComponent<EffectManager>().GetTapeEffect(), jointObj[jointNum].obj.transform.position, Quaternion.identity);
                     //tapePart.GetComponent<ParticleSystem>().Play();
                 }
+                
+                GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>().PlayTearSE();
             }
             else
             {
@@ -436,6 +445,11 @@ public class TapeScript : MonoBehaviour
         
         beingPulled = false;
         startPulling = false;
+
+        if(douzouScript != null)
+        {
+            douzouScript.DouzouDset();
+        }
 
         if(spyderScript != null)
         {

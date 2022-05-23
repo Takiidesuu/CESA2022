@@ -23,6 +23,10 @@ TagManager:
   - RadarObj
   - EffectManager
   - AudioManager
+  - WorldNum
+  - soad
+  - sikaku
+  - spyder
   layers:
   - Default
   - TransparentFX

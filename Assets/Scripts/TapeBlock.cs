@@ -77,20 +77,4 @@ public class TapeBlock : MonoBehaviour
             
         }
     }
-    
-    private void OnTriggerEnter(Collider other) 
-    {
-        if (other.gameObject.tag == "Tape")
-        {
-            hold = true;
-        }
-    }
-    
-    private void OnTriggerExit(Collider other) 
-    {
-        if (other.gameObject.tag == "Tape")
-        {
-            hold = false;
-        }
-    }
 }

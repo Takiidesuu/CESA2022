@@ -69,7 +69,7 @@ public class RadarScript : MonoBehaviour
         
         radarObj.transform.position = playerObj.transform.position;
         
-        var screenCenter = FindObjectOfType<Camera>().ScreenToWorldPoint(Vector3.zero);
+        var screenCenter = FindObjectOfType<Camera>().ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 0.0f));
         
         if (inRange)
         {

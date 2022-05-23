@@ -7,6 +7,8 @@ public class DouzouScript : MonoBehaviour
     //プレイヤーTransformコンポーネントを格納する変数
     public Transform target;
 
+    MovePlayer moveplayer;
+
     //銅像の移動速度
     private float moveSpeed = 2.0f;
 
@@ -16,29 +18,49 @@ public class DouzouScript : MonoBehaviour
     //銅像がプレイヤーに向かって移動を開始する距離を格納する変数
     private float moveDistance = 5.0f;
 
+    private float WaitTime = 1.0f; 
+
+    private void Start()
+    {
+        // targetにPlayerのタグを入れる
+        target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        moveplayer = GameObject.FindGameObjectWithTag("Player").GetComponent<MovePlayer>();
+
+
+    }
+
     void Update()
     {
-        //変数targetPosを作成してプレイヤーにの座標を格納
-        Vector3 targetPos = target.position;
-
-        //銅像自身のY座標を変数targetのY座標に格納
-        //(プレイヤーのX,Z座標のみ参照)
-        targetPos.y = transform.position.y;
-        //銅像を変数targetPosの座標方向に向かせる
-        transform.LookAt(targetPos);
-
-        //変数distanceを作成して銅像の位置とプレイヤーの距離を格納
-        float distance = Vector3.Distance(transform.position, target.position);
-
-        // 銅像とプレイヤーの距離判定
-        // 変数 distance（プレイヤーと銅像の距離）が変数 moveDistance の値より小さければ
-        // さらに変数 distance が変数 stopDistance の値よりも大きい場合
-        if (distance < moveDistance && distance > StopDistance)
+        if (moveplayer.GetStoneNum() > 0)
         {
-            //変数moveSpeedを乗算した速度で銅像を前方向に移動する
-            transform.position = transform.position + transform.forward * moveSpeed * Time.deltaTime;
+            //変数targetPosを作成してプレイヤーの座標を格納
+            Vector3 targetPos = target.position;
+
+            //銅像自身のY座標を変数targetのY座標に格納
+            //(プレイヤーのX,Z座標のみ参照)
+            targetPos.y = transform.position.y;
+            //銅像を変数targetPosの座標方向に向かせる
+            transform.LookAt(targetPos);
+
+            //変数distanceを作成して銅像の位置とプレイヤーの距離を格納
+            float distance = Vector3.Distance(transform.position, target.position);
+
+            // 銅像とプレイヤーの距離判定
+            // 変数 distance（プレイヤーと銅像の距離）が変数 moveDistance の値より小さければ
+            // さらに変数 distance が変数 stopDistance の値よりも大きい場合
+            if (distance < moveDistance && distance > StopDistance)
+            {
+                //変数moveSpeedを乗算した速度で銅像を前方向に移動する
+                transform.position = transform.position + transform.forward * moveSpeed * Time.deltaTime;
+            }
         }
     }
+
+    public void DouzouDset()
+    {
+        Destroy(this.gameObject);
+    }
+
 }
 //    [SerializeField]
 //    [Tooltip("銅像の追跡速度")]

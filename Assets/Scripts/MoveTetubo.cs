@@ -52,6 +52,11 @@ public class MoveTetubo : MonoBehaviour
         if (move)
         {
             platform.transform.position = Vector3.MoveTowards(platform.transform.position, dest, speed * Time.fixedDeltaTime);
+            GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>().PlayBarSE();
+        }
+        else
+        {
+            
         }
     }
 

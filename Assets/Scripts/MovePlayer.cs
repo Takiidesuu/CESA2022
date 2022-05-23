@@ -365,6 +365,10 @@ public class MovePlayer : MonoBehaviour
             
             StartCoroutine("HoldPull");
         }
+        else
+        {
+            StopCoroutine("HoldPull");
+        }
     }
     
     public void StopPull()
