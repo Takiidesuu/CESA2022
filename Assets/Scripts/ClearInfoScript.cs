@@ -4,60 +4,18 @@ using UnityEngine;
 
 public class ClearInfoScript : MonoBehaviour
 {
-    public class ClearInfo
-    {
-        public int WorldNum;
-        public int StageNum;
-        public int StoneNum;
-    }
+    List<ClearInfo> scores = new List<ClearInfo>();
     
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        scores = XMLManager.instance.LoadScores();
     }
     
-/* using System.Collections.Generic;
-using UnityEngine;
-public class HighScores : MonoBehaviour
-{
-public HighScoreDisplay[] highScoreDisplayArray;
-List<HighScoreEntry> scores = new List<HighScoreEntry>();
-void Start()
-{
-    // Adds some test data
-    AddNewScore("John", 4500);
-    AddNewScore("Max", 5520);
-    AddNewScore("Dave", 380);
-    AddNewScore("Steve", 6654);
-    AddNewScore("Mike", 11021);
-    AddNewScore("Teddy", 3252);
-    UpdateDisplay();
-}
-void UpdateDisplay()
-{
-    scores.Sort((HighScoreEntry x, HighScoreEntry y) => y.score.CompareTo(x.score));
-    for (int i = 0; i < highScoreDisplayArray.Length; i++)
+    public void SaveStageState(int wNum, int sNum, int stNum, bool isClear)
     {
-        if (i < scores.Count)
-        {
-            highScoreDisplayArray[i].DisplayHighScore(scores[i].name, scores[i].score);
-        }
-        else
-        {
-            highScoreDisplayArray[i].HideEntryDisplay();
-        }
+        scores.Add(new ClearInfo {WorldNum = wNum, StageNum = sNum, StoneNum = stNum, IsCleared = isClear});
+        
+        XMLManager.instance.SaveScores(scores);
     }
-}
-void AddNewScore(string entryName, int entryScore)
-{
-    scores.Add(new HighScoreEntry { name = entryName, score = entryScore });
-}
-} */
 }
