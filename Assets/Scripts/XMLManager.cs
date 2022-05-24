@@ -9,6 +9,7 @@ public class XMLManager : MonoBehaviour
     public Leaderboard leaderboard;
     
     public static XMLManager instance;
+    private bool createSaveFile = false;
     
     void Awake()
     {
@@ -17,6 +18,17 @@ public class XMLManager : MonoBehaviour
         if (!Directory.Exists(Application.persistentDataPath + "/SaveData/"))
         {
             Directory.CreateDirectory(Application.persistentDataPath + "/SaveData/");
+            
+            createSaveFile = true;
+        }
+    }
+    
+    private void Start() 
+    {
+        if (createSaveFile)
+        {
+            ClearInfoScript.instance.CreateSave();
+            createSaveFile = false;
         }
     }
     

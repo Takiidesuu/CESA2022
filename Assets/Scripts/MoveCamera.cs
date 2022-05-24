@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class MoveCamera : MonoBehaviour
@@ -15,17 +16,26 @@ public class MoveCamera : MonoBehaviour
     
     private bool goal = false;
     private Vector3 goalPos;
+
+    [HideInInspector] public  Camera m_Camera;
     
     public void SetGoal()
     {
         goal = true;
     }
-    
+
+    public void ZoomFov(Camera camera, float zoom, float duration)
+    {
+        float defaultFov = camera.fieldOfView;
+        DOTween.To(() => camera.fieldOfView, fov => camera.fieldOfView = fov, zoom, duration);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         //プレイヤーオブジェクトを変数に入れる
         playerObj = GameObject.FindGameObjectWithTag("Player");
+        m_Camera = GetComponent<Camera>();
     }
 
     // Update is called once per frame

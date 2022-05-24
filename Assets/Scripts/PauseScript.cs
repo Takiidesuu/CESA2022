@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class PauseScript : MonoBehaviour
@@ -12,6 +11,8 @@ public class PauseScript : MonoBehaviour
     
     private bool isPaused = false;
     private bool inputRest = false;
+    
+    private bool selectFlg = false;
     
     GameObject[] menus;
     GameObject childPause;
@@ -111,9 +112,14 @@ public class PauseScript : MonoBehaviour
         {
             isPaused = false;
             
-            GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>().PlayCancelSE();
-            /* inputControls.Player.Enable();
-            inputControls.UI.Disable(); */
+            if (selectFlg)
+            {
+                selectFlg = false;
+            }
+            else
+            {
+                GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>().PlayCancelSE();
+            }
         }
     }
     
@@ -137,6 +143,7 @@ public class PauseScript : MonoBehaviour
         
         if (isPaused)
         {
+            selectFlg = true;
             Pause();
             inputManager.SwitchToPause();
             GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>().PlayDecideSE();

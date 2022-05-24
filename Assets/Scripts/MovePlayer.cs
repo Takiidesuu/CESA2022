@@ -19,6 +19,9 @@ public class MovePlayer : MonoBehaviour
     [Header("剥がす速度")]
     [SerializeField] float tearSpeed = 2.0f;
     
+    [Header("剥がすまでの時間")]
+    [SerializeField] float holdTime = 2.5f;
+    
     private bool onGround = false;              //地面についてるかどうか
     private bool grounded = false;
     private bool finishTearFlg = true;
@@ -335,7 +338,7 @@ public class MovePlayer : MonoBehaviour
             playerAnimation.SetBool("isJump", false);
         }
         
-        slideScript.PressCondition(isPulling);
+        slideScript.PressCondition(isPulling, holdTime);
         playerAnimation.SetBool("isGrab", isPulling);
     }
     
@@ -385,7 +388,7 @@ public class MovePlayer : MonoBehaviour
     
     IEnumerator HoldPull()
     {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(holdTime);
         
         fastPull = true;
     }
@@ -542,6 +545,9 @@ public class MovePlayer : MonoBehaviour
         {
             playerAnimation.SetBool("isClear", true);
         }
+        
+        
+        ClearInfoScript.instance.SaveStageState(collectedStone, true);
     }
     
     public void CheckAnimState()
