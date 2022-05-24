@@ -8,19 +8,19 @@ public class SliderScript : MonoBehaviour
     Slider slide;
     bool beingPressed = false;
     bool stop = false;
-    private float slideSpeed = 0.01f;
+    [SerializeField] float slideSpeed = 0.01f;
 
-    [Header("ï¿½Yï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½é‹—ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½ï¿½pï¿½ï¿½ï¿½Ç‚Ì‚ï¿½ï¿½ç‚¢ï¿½Ï‚ï¿½ï¿½é‚©ï¿½j")]
+    [Header("ƒY[ƒ€‚·‚é‹——£i‹–ìŠp‚ğ‚Ç‚Ì‚­‚ç‚¢•Ï‚¦‚é‚©j")]
     [SerializeField] float zoomDistance = 0.0f;
 
-    [Header("ï¿½Yï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½é‘¬ï¿½xï¿½iï¿½Yï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚Å‚É‚ï¿½ï¿½ï¿½ï¿½éï¿½Ôj")]
+    [Header("ƒY[ƒ€‚·‚é‘¬“xiƒY[ƒ€‚µ‚«‚é‚Ü‚Å‚É‚©‚©‚éŠÔj")]
     [SerializeField] float zoomSpeed = 0.0f;
 
-    [Header("ï¿½Yï¿½[ï¿½ï¿½ï¿½ï¿½ß‚ï¿½ï¿½ï¿½ï¿½x")]
+    [Header("ƒY[ƒ€‚ğ–ß‚·‘¬“x")]
     [SerializeField] float backSpeed = 0.0f;
 
     private float slideValue = 0.0f;
-    private float holdTime = 2.0f;
+    private float holdTime = 2.5f;
 
     MoveCamera m_ZoomCamera;
     
@@ -45,7 +45,7 @@ public class SliderScript : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        slideSpeed = 1.0f / (holdTime * 60.0f * 0.85f);
+        slideSpeed = 1 / 60.0f * holdTime * 0.85f;
         
         if (beingPressed && !stop)
         {
@@ -64,7 +64,6 @@ public class SliderScript : MonoBehaviour
             stop = false;
             m_ZoomCamera.ZoomFov(m_ZoomCamera.m_Camera, 33.0f, backSpeed);
         }
-
   
         slide.value = slideValue;
     }

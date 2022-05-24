@@ -15,12 +15,14 @@ public class InputManager : MonoBehaviour
     private bool gameScene = false;
     
     private float movement;
+    private float CameraVec;
     private Vector2 pullVec;
     private Vector2 moveFloat;
     
     private Vector2 menuSelectFloat;
     
     private bool pauseSwitch = false;
+    private bool canJump = true;
     
     private void Awake() 
     {
@@ -65,6 +67,11 @@ public class InputManager : MonoBehaviour
     public float GetMoveFloat()
     {
         return movement;
+    }
+
+    public float GetMoveCamera()
+    {
+        return CameraVec;
     }
     
     public Vector2 GetTearFloat()
@@ -116,6 +123,7 @@ public class InputManager : MonoBehaviour
             movement = inputControls.Player.Move.ReadValue<float>();
             pullVec = inputControls.Player.Tear.ReadValue<Vector2>();
             moveFloat = inputControls.UI._4Direction.ReadValue<Vector2>();
+            CameraVec = inputControls.Player.Camera.ReadValue<float>();
         }
         else
         {
@@ -212,5 +220,23 @@ public class InputManager : MonoBehaviour
     public bool GetMenuCancelState()
     {
         return CancelPressed;
+    }
+    
+    private bool gameoverSwitch = false;
+
+    public void SwitchToGameOver()
+    {
+        gameoverSwitch = !gameoverSwitch;
+
+        if (gameoverSwitch)
+        {
+            inputControls.Player.Disable();
+            inputControls.UI.Enable();
+        }
+        else
+        {
+            inputControls.Player.Enable();
+            inputControls.UI.Disable();
+        }
     }
 }

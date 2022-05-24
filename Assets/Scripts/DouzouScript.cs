@@ -5,9 +5,11 @@ using UnityEngine;
 public class DouzouScript : MonoBehaviour
 {   
     //プレイヤーTransformコンポーネントを格納する変数
-    public Transform target;
+    private Transform target;
 
     MovePlayer moveplayer;
+
+    Rigidbody rb;
 
     //銅像の移動速度
     private float moveSpeed = 2.0f;
@@ -18,13 +20,16 @@ public class DouzouScript : MonoBehaviour
     //銅像がプレイヤーに向かって移動を開始する距離を格納する変数
     private float moveDistance = 5.0f;
 
-    private float WaitTime = 1.0f; 
+    private float WaitTime = 1.0f;
+
+    private bool Freeze = false;
 
     private void Start()
     {
         // targetにPlayerのタグを入れる
         target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         moveplayer = GameObject.FindGameObjectWithTag("Player").GetComponent<MovePlayer>();
+        rb = GetComponent<Rigidbody>();
 
 
     }
@@ -59,6 +64,50 @@ public class DouzouScript : MonoBehaviour
     public void DouzouDset()
     {
         Destroy(this.gameObject);
+    }
+
+    void OnCollisionEnter(Collision col)
+    {
+        if(col.gameObject.tag == "Player")
+        {
+            rb.constraints = RigidbodyConstraints.FreezeAll;
+        }
+
+        //if(col.gameObject.tag == "")
+       
+
+    }
+
+    void OnCollisionExit(Collision col)
+    {
+        if (col.gameObject.tag == "Player")
+        {
+            rb.constraints = RigidbodyConstraints.None;
+            Freeze = true;
+            if (Freeze == true)
+            {
+                rb.constraints = RigidbodyConstraints.FreezePositionY
+                | RigidbodyConstraints.FreezePositionZ
+                | RigidbodyConstraints.FreezeRotation;
+            }
+            Freeze = false;
+
+
+        }
+
+    }
+
+    void DouzouFreeze()
+    {
+        //if(Freeze == true)
+        //{
+        //    rb.constraints = RigidbodyConstraints.FreezePositionY;
+        //    rb.constraints = RigidbodyConstraints.FreezePositionZ;
+        //    rb.constraints = RigidbodyConstraints.FreezeRotation;
+        //}
+        
+       
+        
     }
 
 }

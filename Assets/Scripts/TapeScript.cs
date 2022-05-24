@@ -42,9 +42,6 @@ public class TapeScript : MonoBehaviour
     MovePlayer playerScript;
     TapeBlock blockScript;
 
-
-
-
     private Vector3 tapeSize = Vector3.zero;    //テープのサイズ
 
     public class JointData

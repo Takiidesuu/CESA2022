@@ -14,22 +14,28 @@ public class KnightAttack : MonoBehaviour
         col = GetComponent<Collider>();
 
         KS = GetComponentInParent<KnightScript>();
+
+
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
-            KS.KnightAttack();
+             KS.KnightAttack();
             KS.KnightPreparation();
         }
+       
+        
     }
 
     void OnTriggerExit(Collider other)
     {
-            if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player")
         {
             KS.KnightNotAttack();
         }
+        
+        
     }
 }

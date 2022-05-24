@@ -219,7 +219,6 @@ public class AudioManager : MonoBehaviour
     public void PlayGetStoneSE()
     {
         PlaySE(slateSE, slateVolume);
-        Debug.Log("stone");
     }
     
     public void PlayPauseSE()

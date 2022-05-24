@@ -71,6 +71,15 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Camera"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""2a9b7783-2ffd-4b51-8752-26df0e8fc6c4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -326,6 +335,39 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""CameraAxis"",
+                    ""id"": ""a3922c23-5584-4eec-8abd-731c8de8a3d1"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Camera"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""ac2b6387-05af-43be-a634-2b8451d4f752"",
+                    ""path"": ""<Gamepad>/rightStick/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PlayerInput"",
+                    ""action"": ""Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""a76c3bdb-9a2e-4de7-9732-ad23335ee1c2"",
+                    ""path"": ""<Gamepad>/rightStick/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PlayerInput"",
+                    ""action"": ""Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -765,6 +807,7 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
         m_Player_Pull = m_Player.FindAction("Pull", throwIfNotFound: true);
         m_Player_Tear = m_Player.FindAction("Tear", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+        m_Player_Camera = m_Player.FindAction("Camera", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI__4Direction = m_UI.FindAction("4Direction", throwIfNotFound: true);
@@ -840,6 +883,7 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Pull;
     private readonly InputAction m_Player_Tear;
     private readonly InputAction m_Player_Pause;
+    private readonly InputAction m_Player_Camera;
     public struct PlayerActions
     {
         private @MainInputControls m_Wrapper;
@@ -849,6 +893,7 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
         public InputAction @Pull => m_Wrapper.m_Player_Pull;
         public InputAction @Tear => m_Wrapper.m_Player_Tear;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
+        public InputAction @Camera => m_Wrapper.m_Player_Camera;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -873,6 +918,9 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                 @Pause.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
                 @Pause.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
                 @Pause.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
+                @Camera.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCamera;
+                @Camera.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCamera;
+                @Camera.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCamera;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -892,6 +940,9 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
+                @Camera.started += instance.OnCamera;
+                @Camera.performed += instance.OnCamera;
+                @Camera.canceled += instance.OnCamera;
             }
         }
     }
@@ -1018,6 +1069,7 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
         void OnPull(InputAction.CallbackContext context);
         void OnTear(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnCamera(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

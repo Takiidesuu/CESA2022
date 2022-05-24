@@ -8,17 +8,20 @@ public class KnightCenser : MonoBehaviour
 
     Collider col;
 
+
+
     // Start is called before the first frame update
     void Start()
     {
         col = GetComponent<Collider>();
 
         KS = GetComponentInParent<KnightScript>();
+
     }
 
     void OnTriggerEnter(Collider other)
     {
-       if(other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player")
         {
             KS.KnightPreparation();
         }
@@ -30,6 +33,8 @@ public class KnightCenser : MonoBehaviour
         {
             KS.KnightPreparation();
         }
+
+        
     }
 
     void OnTriggerExit(Collider other)
@@ -38,5 +43,7 @@ public class KnightCenser : MonoBehaviour
         {
             KS.KnightIdle();
         }
+        
+        
     }
 }

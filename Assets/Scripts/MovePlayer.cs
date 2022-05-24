@@ -50,6 +50,8 @@ public class MovePlayer : MonoBehaviour
     
     GameObject[] stoneObj;
     
+    MoveCamera cameraScript;
+    
     public int GetStoneNum()
     {
         return collectedStone;
@@ -72,6 +74,8 @@ public class MovePlayer : MonoBehaviour
     public void ReachedGoal()
     {
         reachedGoal = true;
+        
+        rb.velocity = new Vector3(0.0f, rb.velocity.y, 0.0f);
         
         StartCoroutine("GoalAnimation");
     }
@@ -126,6 +130,8 @@ public class MovePlayer : MonoBehaviour
         
         stoneNumInMap = GameObject.FindGameObjectsWithTag("Stone").Length;
         stoneObj = new GameObject[10];
+        
+        cameraScript = FindObjectOfType<Camera>().GetComponent<MoveCamera>();
     }
     
     // Update is called once per frame
@@ -222,6 +228,15 @@ public class MovePlayer : MonoBehaviour
             if (finishTearFlg)
             {
                 float movement = inputManager.GetMoveFloat();
+                
+                if (movement == 0.0f)
+                {
+                    cameraScript.nowidle();
+                }
+                else if (movement != 0.0f)
+                {
+                    cameraScript.nowmove();
+                }
                 
                 RaycastHit hit;
                 

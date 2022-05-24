@@ -11,15 +11,15 @@ public class KnightScript : MonoBehaviour
 
     private Vector3 StartPos;
 
-
+    private Vector3 GoalPos;
 
     private float LeftAngle = 90.0f;
     private float RightAngle = -90.0f;
 
+    //private Quaternion RightGoal; 
+    //private Quaternion LeftGoal; 
+
     private float speed = 5.0f;
-
-
-    //MovePlayer movePlayer;
 
     private float Distance = 3.0f;
 
@@ -35,15 +35,43 @@ public class KnightScript : MonoBehaviour
 
     private Quaternion DownRotate;
 
+    private bool StoneFlag = false;
+
+    //MovePlayer movePlayer;
+    //KnightCenser knightCenser;
+    //KnightAttack knightAttack;
+
+    [SerializeField] GameObject knightObject;
+
+    SkinnedMeshRenderer meshRenderer;
+    MeshCollider collider;
+
+    private float time = 0;
+
+    private void UpdateCollider()
+    {
+        Mesh colliderMesh = new Mesh();
+        meshRenderer.BakeMesh(colliderMesh);
+        collider.sharedMesh = null;
+        collider.sharedMesh = colliderMesh;
+    }
 
     void Start()
     {
+        meshRenderer = knightObject.GetComponent< SkinnedMeshRenderer > ();
+        collider = knightObject.GetComponent<MeshCollider > ();
+
         target = GameObject.Find("NeelGicGrab").transform;
 
         Knight = GameObject.FindWithTag("soad");
- 
+
+        //movePlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<MovePlayer>();
+
 
         StartPos = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
+
+        //RightGoal = Quaternion.Euler(0.0f, RightAngle, 0.0f);
+        //LeftGoal = Quaternion.Euler(0.0f, LeftAngle, 0.0f);
 
 
         col = GetComponent<Collider>();
@@ -53,6 +81,8 @@ public class KnightScript : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
 
         anim.SetBool("Idle", true);
+
+        
 
 
         //DownPos = new Vector3(this.transform.position.x - 2.5f, this.transform.position.y, this.transform.position.z * 3.0f);
@@ -64,36 +94,38 @@ public class KnightScript : MonoBehaviour
 
     void Update()
     {
-        //if(movePlayer.GetStoneNum() > 0)
-        //{
-
-        //}
-
-
-        //step = speed * Time.deltaTime;
-
-      
-
-        //float distance = Vector3.Distance(transform.position, target.position);
-
-        //if (distance < 5.0f && distance > 1.5f)
-        //{
-        //this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, Quaternion.Euler(0.0f, RightAngle, 0.0f), step);
-
-        //}
-
-
-
-
-        //float distance = (this.transform.position - target.transform.position).magnitude;
-
-        //if (this.transform.position.x * -1.0f >= target.position.z)
-        //{
-
-        //}
-
-
+        time += Time.deltaTime;
+        if (time >= 0.5f)
+        {
+            time = 0;
+            UpdateCollider();
+        }
     }
+
+
+    //step = speed * Time.deltaTime;
+
+
+
+    //float distance = Vector3.Distance(transform.position, target.position);
+
+    //if (distance < 5.0f && distance > 1.5f)
+    //{
+    //this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, Quaternion.Euler(0.0f, RightAngle, 0.0f), step);
+
+    //}
+
+
+
+
+    //float distance = (this.transform.position - target.transform.position).magnitude;
+
+    //if (this.transform.position.x * -1.0f >= target.position.z)
+    //{
+
+    //}
+
+
 
     public void KnightIdle()
     {
@@ -112,16 +144,22 @@ public class KnightScript : MonoBehaviour
     {
         anim.SetBool("Attack", true);
         anim.SetBool("AttackPreparation", false);
+       // this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z - 1.0f);
+        //GoalPos = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z - 1.0f);
+
     }
 
     public void KnightNotAttack()
     {
         anim.SetBool("Attack", false);
         anim.SetBool("Idle", true);
+       // this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z + 1.0f);
     }
 
     public void KnightRotate()
     {
+
+
         anim.SetBool("Attack", false);
         anim.SetBool("AttackPreparation", false);
         anim.SetBool("Idle", true);
@@ -130,6 +168,26 @@ public class KnightScript : MonoBehaviour
         //this.transform.position = Vector3.MoveTowards(transform.position, DownPos, speed * Time.deltaTime / (3.6f - (1.0f * velocity02)));
         col.isTrigger = true;
         this.transform.rotation = Quaternion.Euler(0.0f, RightAngle, 0.0f);
+       
+
+
+    }
+
+    public void KnightRotate2()
+    {
+
+
+        anim.SetBool("Attack", false);
+        anim.SetBool("AttackPreparation", false);
+        anim.SetBool("Idle", true);
+
+        //float velocity02 = 2.2f;
+        //this.transform.position = Vector3.MoveTowards(transform.position, DownPos, speed * Time.deltaTime / (3.6f - (1.0f * velocity02)));
+        col.isTrigger = true;
+        this.transform.rotation = Quaternion.Euler(0.0f, LeftAngle, 0.0f);
+
+
+
     }
 
 

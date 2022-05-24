@@ -71,6 +71,8 @@ public class RadarScript : MonoBehaviour
         
         var screenCenter = FindObjectOfType<Camera>().ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 0.0f));
         
+        screenCenter = new Vector3(screenCenter.x, screenCenter.y - 1.5f, screenCenter.z);
+        
         if (inRange)
         {
             if (!isVisible)
@@ -107,9 +109,6 @@ public class RadarScript : MonoBehaviour
             {
                 blipPos.anchoredPosition = new Vector2(blipPos.anchoredPosition.x, (canvasHeight / 2.0f - 100.0f) * -1.0f);
             }
-            
-            /* Mathf.Clamp(blipPos.anchoredPosition.x, canvasWidth / 2.0f * -1.0f, canvasWidth / 2.0f);
-            Mathf.Clamp(blipPos.anchoredPosition.y, canvasHeight / 2.0f, canvasHeight / 2.0f * -1.0f); */
         }
         else
         {
