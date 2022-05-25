@@ -24,6 +24,13 @@ public class InputManager : MonoBehaviour
     private bool pauseSwitch = false;
     private bool canJump = true;
     
+    private bool reachedGoal = false;
+    
+    public void SetGoalStatus()
+    {
+        reachedGoal = true;
+    }
+    
     private void Awake() 
     {
         inputControls = new MainInputControls();
@@ -140,9 +147,12 @@ public class InputManager : MonoBehaviour
     
     private void Pause(InputAction.CallbackContext obj)
     {
-        pauseSc.Pause();
+        if (!reachedGoal)
+        {
+            pauseSc.Pause();
         
-        SwitchToPause();
+            SwitchToPause();
+        }
     }
     
     public void SwitchToPause()

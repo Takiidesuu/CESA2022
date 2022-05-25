@@ -588,6 +588,8 @@ public class MovePlayer : MonoBehaviour
             stoneObj[a].GetComponent<StoneScript>().StartResultAnim((a * 1.0f) - (a * 2.0f));  //計算式考えて
         }
         
+        inputManager.SetGoalStatus();
+        
         yield return new WaitForSeconds(3.0f);
         
         if (collectedStone == stoneNumInMap)
