@@ -18,6 +18,15 @@ public class StoneScript : MonoBehaviour
     [Header("ストーンの上下距離")]
     [SerializeField] float moveDistance = 1.0f;
     
+    [Header("飛ばす力（なくす時）")]
+    [SerializeField] float flyForce = 2.0f;
+    
+    [Header("元の場所に戻るか")]
+    [SerializeField] bool returnPos = false;
+    
+    private Vector3 startPos;
+    private bool returningToPos = false;
+    
     private float rotateSpeed = 30.0f;
     private float moveSpeed = 2.0f;
     
@@ -53,7 +62,14 @@ public class StoneScript : MonoBehaviour
         collected = false;
         transform.parent = null;
         
-        rb.AddForce(new Vector3((Random.Range(-2.0f, 2.0f)) * 3.0f, 2.0f, 0.0f), ForceMode.Impulse);
+        if (!returnPos)
+        {
+            rb.AddForce(new Vector3(Mathf.Sign((Random.Range(-2.0f, 2.0f))) * flyForce * 10.0f, flyForce * 2.0f, 0.0f), ForceMode.Impulse);
+        }
+        else
+        {
+            returningToPos = true;
+        }
         
         Physics.IgnoreCollision(this.GetComponent<BoxCollider>(), playerObj.GetComponent<Collider>(), true);
         StartCoroutine("CollectWaitTime");
@@ -80,6 +96,8 @@ public class StoneScript : MonoBehaviour
         
         shineObj = Instantiate(effectManager.GetComponent<EffectManager>().GetStoneEffect(), this.transform.position, Quaternion.identity);
         shineObj.transform.parent = this.transform;
+        
+        startPos = this.transform.position;
     }
 
     // Update is called once per frame
@@ -90,6 +108,11 @@ public class StoneScript : MonoBehaviour
             if (!collected)
             {
                 MoveStone();
+                
+                if (returningToPos)
+                {
+                    this.transform.position = Vector3.MoveTowards(this.transform.position, startPos, 50.0f * Time.deltaTime);
+                }
             }
             else
             {
