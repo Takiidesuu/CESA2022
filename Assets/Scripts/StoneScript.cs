@@ -109,6 +109,8 @@ public class StoneScript : MonoBehaviour
             {
                 MoveStone();
                 
+                this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, 0.0f);
+                
                 if (returningToPos)
                 {
                     this.transform.position = Vector3.MoveTowards(this.transform.position, startPos, 50.0f * Time.deltaTime);

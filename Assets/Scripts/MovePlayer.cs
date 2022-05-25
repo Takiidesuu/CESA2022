@@ -466,6 +466,8 @@ public class MovePlayer : MonoBehaviour
                 childObjects[i] =  transform.GetChild(i).gameObject;
             }
             
+            Physics.IgnoreLayerCollision(0, 8, true);
+            
             StartCoroutine("InvincibleTime");
             InvokeRepeating("InvincibleFlicker", 0.0f, invincibleCycleTime);
             
@@ -487,6 +489,8 @@ public class MovePlayer : MonoBehaviour
         {
             childObjects[i].SetActive(true);
         }
+        
+        Physics.IgnoreLayerCollision(0, 8, false);
     }
     
     private void InvincibleFlicker()
