@@ -51,6 +51,8 @@ public class MoveCamera : MonoBehaviour
         //プレイヤーオブジェクトを変数に入れる
         playerObj = GameObject.FindGameObjectWithTag("Player");
         m_Camera = GetComponent<Camera>();
+        
+        inputScript = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManager>();
     }
 
     // Update is called once per frame

@@ -22,6 +22,15 @@ public class MovePlayer : MonoBehaviour
     [Header("剥がすまでの時間")]
     [SerializeField] float holdTime = 2.5f;
     
+    [Header("ノックバック力")]
+    [SerializeField] float knockBackForce = 3.0f;
+    
+    [Header("無敵期間")]
+    [SerializeField] float invincibleDuration = 1.0f;
+    
+    [Header("点滅の間")]
+    [SerializeField] float invincibleCycleTime = 0.1f;
+    
     private bool onGround = false;              //地面についてるかどうか
     private bool grounded = false;
     private bool finishTearFlg = true;
@@ -139,8 +148,11 @@ public class MovePlayer : MonoBehaviour
     {
         if (!reachedGoal)
         {
-            Move();     //動く関数
-        
+            if (!invincible)
+            {
+                Move();     //動く関数
+            }
+            
             if (rb.velocity.y >= 0)
             {
                 rb.AddForce(Physics.gravity * 0.2f * rb.mass);
@@ -359,7 +371,7 @@ public class MovePlayer : MonoBehaviour
     
     public void Jump()
     {
-        if (!onGround || isPulling || !grounded || reachedGoal){
+        if (!onGround || isPulling || !grounded || reachedGoal || invincible){
             return;
         }
         
@@ -374,7 +386,7 @@ public class MovePlayer : MonoBehaviour
     
     public void Pull() 
     {
-        if (inRange && !isPulling && tapeHold != null && tapeHold.CanPull() && onGround && !reachedGoal)
+        if (inRange && !isPulling && tapeHold != null && tapeHold.CanPull() && onGround && !reachedGoal && !invincible)
         {
             Debug.Log("StartPull");
             tapeHold.SetDirection(direction);
@@ -445,23 +457,45 @@ public class MovePlayer : MonoBehaviour
             audioManager.PlayEnemyHitSE();
             
             invincible = true;
+            
+            int children = transform.childCount;
+            childObjects = new GameObject[children];
+            
+            for (int i = 0; i < children; ++i)
+            {
+                childObjects[i] =  transform.GetChild(i).gameObject;
+            }
+            
             StartCoroutine("InvincibleTime");
-            InvokeRepeating("InvincibleFlicker", 0.0f, 0.1f);
+            InvokeRepeating("InvincibleFlicker", 0.0f, invincibleCycleTime);
+            
+            Vector3 force = new Vector3(knockBackForce * 2.0f, knockBackForce * 1.5f, 0.0f);
+            rb.AddForce(force, ForceMode.Impulse);
         }
     }
     
+    GameObject[] childObjects;
+    
     IEnumerator InvincibleTime()
     {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(invincibleDuration);
         
         invincible = false;
         CancelInvoke();
-        transform.GetChild(0).gameObject.SetActive(true);
+        int children = transform.childCount;
+        for (int i = 0; i < children; ++i)
+        {
+            childObjects[i].SetActive(true);
+        }
     }
     
     private void InvincibleFlicker()
     {
-        transform.GetChild(0).gameObject.SetActive(!transform.GetChild(0).gameObject.activeSelf);
+        int children = transform.childCount;
+        for (int i = 0; i < children; ++i)
+        {
+            childObjects[i].SetActive(!childObjects[i].activeSelf);
+        }
     }
     
     private void OnCollisionStay(Collision other) 
