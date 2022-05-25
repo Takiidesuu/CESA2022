@@ -502,7 +502,7 @@ public class StageSelectScript : MonoBehaviour
         isStart = false;
         
         // StageLoad•ÏX—\’è
-        
+        ClearInfoScript.instance.SetWorldStageNum(WorldNo, StageNo);
     }
 
     void FadeUI(CanvasGroup fadeobject , float fadespeed , bool isfade , FadeState fadeState)

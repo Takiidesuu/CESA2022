@@ -72,28 +72,8 @@ public class MoveTetubo : MonoBehaviour
     {
         if (other.gameObject.tag == "TapeBlock")
         {
-            if (this.transform.eulerAngles.z == 0.0f || this.transform.eulerAngles.z == 180.0f)
-            {
-                if (platform.transform.position.y >= other.transform.position.y)
-                {                
-                    objA.transform.position = new Vector3(objA.transform.position.x, other.transform.position.y + 1.0f + platform.GetComponent<Renderer>().bounds.size.y / 2.0f, objA.transform.position.z);
-                }
-                else
-                {
-                    objA.transform.position = new Vector3(objA.transform.position.x, other.transform.position.y - 1.0f - platform.GetComponent<Renderer>().bounds.size.y / 2.0f, objA.transform.position.z);
-                }
-            }
-            else
-            {
-                if (platform.transform.position.x >= other.transform.position.x)
-                {                
-                    objA.transform.position = new Vector3(other.transform.position.x + 1.0f + platform.GetComponent<Renderer>().bounds.size.x / 2.0f, objA.transform.position.y, objA.transform.position.z);
-                }
-                else
-                {
-                    objA.transform.position = new Vector3(other.transform.position.x - 1.0f - platform.GetComponent<Renderer>().bounds.size.x / 2.0f , objA.transform.position.y, objA.transform.position.z);
-                }
-            }
+            StartCoroutine("HoldPosition");
+            move = false;
         }
     }
 }
