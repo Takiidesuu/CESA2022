@@ -393,11 +393,10 @@ public class MovePlayer : MonoBehaviour
     {
         if (inRange && !isPulling && tapeHold != null && tapeHold.CanPull() && onGround && !reachedGoal && !invincible)
         {
-            Debug.Log("StartPull");
             tapeHold.SetDirection(direction);
             tapeHold.SetPull(true);
             isPulling = true;
-            
+            fastPull = false;
             StartCoroutine("HoldPull");
         }
         else
@@ -411,10 +410,10 @@ public class MovePlayer : MonoBehaviour
         if (isPulling && !fastPull && !inFreeze)
         {
             StopCoroutine("HoldPull");
-            Debug.Log("StopPull");
             tapeHold.StopPulling();
             tapeHold.SetDirection(direction);
             isPulling = false;
+            fastPull = false;
         }
     }
     
@@ -580,7 +579,6 @@ public class MovePlayer : MonoBehaviour
         {
             case "Tape":
                 inRange = false;
-                Debug.Log("StopTrigger");
                 StopPull();
                 break;
         }
