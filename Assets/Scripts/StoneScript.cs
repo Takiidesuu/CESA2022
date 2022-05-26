@@ -134,7 +134,7 @@ public class StoneScript : MonoBehaviour
             }
             else
             {
-                this.transform.localPosition = Vector3.MoveTowards(this.transform.localPosition, followOffset, 30.0f * Time.deltaTime);
+                this.transform.localPosition = followOffset;
             }
             
             shineObj.SetActive(!collected);
