@@ -8,7 +8,7 @@ public class SliderScript : MonoBehaviour
     Slider slide;
     bool beingPressed = false;
     bool stop = false;
-    [SerializeField] float slideSpeed = 0.01f;
+    private float slideSpeed = 0.01f;
 
     [Header("ズームする距離（視野角をどのくらい変えるか）")]
     [SerializeField] float zoomDistance = 0.0f;
@@ -45,7 +45,10 @@ public class SliderScript : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        slideSpeed = 1 / 60.0f * holdTime * 0.85f;
+        slideSpeed = 1.0f / holdTime * Time.deltaTime;
+        
+        Debug.Log(slideSpeed);
+        Debug.Log(slideValue + "  value");
         
         if (beingPressed && !stop)
         {

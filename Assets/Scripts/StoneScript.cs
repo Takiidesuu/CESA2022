@@ -154,7 +154,7 @@ public class StoneScript : MonoBehaviour
             }
             else
             {
-                var targetPos = new Vector3(0.0f, 0.0f, -1.0f);
+                var targetPos = new Vector3(0.0f, 0.5f, -1.0f);
                 
                 this.transform.localPosition = Vector3.MoveTowards(this.transform.localPosition, targetPos, 20.0f * Time.deltaTime);
                 

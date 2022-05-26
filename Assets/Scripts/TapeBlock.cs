@@ -10,12 +10,12 @@ public class TapeBlock : MonoBehaviour
     Rigidbody rb;
     Collider col;
     
-    Vector3 direction;
-    Vector3 targetPos;
+    float targetPos;
     
     GameObject tape;
     
     bool hold = true;
+    bool moveObj = true;
     
     bool playMusic = true;
     
@@ -34,7 +34,7 @@ public class TapeBlock : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeAll;
         col.isTrigger = true;
         
-        targetPos = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.transform.transform.position.z - 1.8f);
+        targetPos = this.transform.transform.position.z - 3.3f;
         
         hold = true;
     }
@@ -50,13 +50,20 @@ public class TapeBlock : MonoBehaviour
             
             col.isTrigger = false;
             
-            if (this.transform.position != targetPos)
+            if (this.transform.position.z > targetPos && moveObj)
             {
-                Vector3 vel = direction / 5.0f * speed;
+                moveObj = true;
+            }
+            else
+            {
+                moveObj = false;
+            }
+            
+            if (moveObj)
+            {
+                Vector3 vel = new Vector3(0.0f, 0.0f, -speed);
                 
-                //rb.AddForce(vel, ForceMode.Impulse);
-                
-                this.transform.position = Vector3.MoveTowards(this.transform.position, targetPos, speed / 100.0f);
+                rb.velocity = vel;
                 
                 if (playMusic)
                 {
@@ -69,7 +76,7 @@ public class TapeBlock : MonoBehaviour
                 Vector3 vel = new Vector3(0.0f, 0.0f, 0.0f);
                 rb.velocity = vel;
                 
-                this.transform.position = targetPos;
+                this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, targetPos);
             }
         }
         else

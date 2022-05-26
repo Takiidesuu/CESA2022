@@ -51,6 +51,7 @@ public class MovePlayer : MonoBehaviour
     private bool firstPartGoal = true;
     
     private bool invincible = false;
+    private bool canRotate = true;
 
     Animator playerAnimation;
 
@@ -197,7 +198,12 @@ public class MovePlayer : MonoBehaviour
                 else
                 {
                     transform.eulerAngles = to;
-                    StartCoroutine("GoalAnimation");
+                    
+                    if (canRotate)
+                    {
+                        StartCoroutine("GoalAnimation");
+                        canRotate = false;
+                    }
                 }
                 
                 playerAnimation.SetBool("isMove", false);
@@ -206,35 +212,20 @@ public class MovePlayer : MonoBehaviour
             }
             else
             {
-                var allStonesDone = true;
-                    
-                for (int a = 0; a < collectedStone; a++)
-                {
-                    if (!stoneObj[a].GetComponent<StoneScript>().AnimationFinished())
-                    {
-                        allStonesDone = false;
-                    }
-                }
+                Vector3 to = new Vector3(0, 90, 0);
                 
-                if (allStonesDone)
+                if (transform.localRotation.eulerAngles.y !=  to.y)
                 {
-                    Vector3 to = new Vector3(0, 90, 0);
+                    transform.eulerAngles = Vector3.RotateTowards(this.transform.eulerAngles, to, 25.0f * Time.deltaTime, 2.0f);
+                }
+                else
+                {
+                    transform.eulerAngles = to;
                     
-                    if (transform.localRotation.eulerAngles.y !=  to.y)
-                    {
-                        transform.eulerAngles = Vector3.RotateTowards(this.transform.eulerAngles, to, 25.0f * Time.deltaTime, 2.0f);
-                        Debug.Log(transform.localRotation.eulerAngles.y);
-                    }
-                    else
-                    {
-                        transform.eulerAngles = to;
-                        
-                        rb.velocity = new Vector3(speed, rb.velocity.y, 0.0f);
-                        
-                        playerAnimation.SetBool("isComplete", false);
-                        playerAnimation.SetBool("isClear", false);
-                        playerAnimation.SetBool("isMove", true);
-                    }
+                    rb.velocity = new Vector3(speed, rb.velocity.y, 0.0f);
+                    playerAnimation.SetBool("isComplete", false);
+                    playerAnimation.SetBool("isClear", false);
+                    playerAnimation.SetBool("isMove", true);
                 }
             }
         }
@@ -604,7 +595,7 @@ public class MovePlayer : MonoBehaviour
         
         inputManager.SetGoalStatus();
         
-        yield return new WaitForSeconds(3.0f + (((float)stoneNumInMap - 3.0f) * 0.5f));
+        yield return new WaitForSeconds(3.0f);
         
         if (collectedStone == stoneNumInMap)
         {

@@ -41,7 +41,7 @@ public class RadarScript : MonoBehaviour
         col.isTrigger = true;
         
         blipObj = new GameObject("RadarBlip" + this.gameObject.name);
-        blipObj.transform.parent = GameObject.Find("Canvas").transform;
+        blipObj.transform.parent = GameObject.FindGameObjectWithTag("Canvas").transform;
         blipObj.tag = "RadarObj";
         blipObj.AddComponent<Image>().sprite = blipPic;
         blipObj.transform.localScale = new Vector3(3.0f, 2.0f, 1.0f);
@@ -52,8 +52,8 @@ public class RadarScript : MonoBehaviour
         blipObj.GetComponent<Image>().color = tempColor;
         
         cameraBound = new Vector2[2];
-        canvasWidth = GameObject.Find("Canvas").GetComponent<RectTransform>().rect.width;
-        canvasHeight = GameObject.Find("Canvas").GetComponent<RectTransform>().rect.height;
+        canvasWidth = GameObject.FindGameObjectWithTag("Canvas").GetComponent<RectTransform>().rect.width;
+        canvasHeight = GameObject.FindGameObjectWithTag("Canvas").GetComponent<RectTransform>().rect.height;
     }
 
     // Update is called once per frame
