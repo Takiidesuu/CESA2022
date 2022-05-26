@@ -42,19 +42,35 @@ public class StoneScript : MonoBehaviour
     private bool animDoneFlg = false;
     
     private bool collected = false;
+    private bool finalReturn = false;
     
     private GameObject effectManager;
     private GameObject shineObj;
 
     public void StartResultAnim(float order)
     {
-        collect = true;
         resultPos = order;
+        
+        this.transform.eulerAngles = new Vector3(0.0f, -90.0f, 90.0f);
+        
+        StartCoroutine("WaitForTurn");
+    }
+    
+    IEnumerator WaitForTurn()
+    {
+        yield return new WaitForSeconds(0.5f * resultPos);
+        
+        collect = true;
     }
     
     public bool AnimationFinished()
     {
         return animDoneFlg;
+    }
+    
+    public void ReturnToBag()
+    {
+        finalReturn = true;
     }
     
     public void LoseStone()
@@ -90,7 +106,7 @@ public class StoneScript : MonoBehaviour
         playerObj = GameObject.FindGameObjectWithTag("Player");
         effectManager = GameObject.FindGameObjectWithTag("EffectManager");
         
-        this.GetComponent<BoxCollider>().size = new Vector3(colSize, colSize, 1.0f);
+        this.GetComponent<BoxCollider>().size = new Vector3(colSize, colSize, colSize);
         
         followOffset = new Vector3(0.0f, 1.0f, -1.5f * distance);
         
@@ -118,27 +134,45 @@ public class StoneScript : MonoBehaviour
             }
             else
             {
-                this.transform.localPosition = Vector3.MoveTowards(this.transform.localPosition, followOffset, 20.0f * Time.deltaTime);
+                this.transform.localPosition = Vector3.MoveTowards(this.transform.localPosition, followOffset, 30.0f * Time.deltaTime);
             }
             
             shineObj.SetActive(!collected);
         }
         else
         {
-            var targetPos = new Vector3(resultPos, 5.0f, 0.0f);
-            
-            this.transform.localPosition = Vector3.MoveTowards(this.transform.localPosition, targetPos, 2.0f * Time.deltaTime);
-            
-            if (this.transform.localPosition == targetPos)
+            if (!finalReturn)
             {
-                animDoneFlg = true;
+                var targetPos = new Vector3(0.0f, 5.0f, -1.0f);
+            
+                this.transform.localPosition = Vector3.MoveTowards(this.transform.localPosition, targetPos, 20.0f * Time.deltaTime);
+                
+                if (this.transform.localPosition == targetPos)
+                {
+                    animDoneFlg = true;
+                }
+            }
+            else
+            {
+                var targetPos = new Vector3(0.0f, 0.0f, -1.0f);
+                
+                this.transform.localPosition = Vector3.MoveTowards(this.transform.localPosition, targetPos, 20.0f * Time.deltaTime);
+                
+                if (this.transform.localPosition == targetPos)
+                {
+                    animDoneFlg = true;
+                }
+                else
+                {
+                    animDoneFlg = false;
+                }
             }
         }
     }
     
     private void MoveStone()
     {
-        transform.Rotate(0.0f, -rotateSpeed * Time.deltaTime, 0.0f, Space.Self);
+        transform.Rotate(-rotateSpeed * Time.deltaTime, 0.0f, 0.0f, Space.Self);
         
         Vector3 vel = new Vector3(rb.velocity.x, Mathf.Lerp(minimum, maximum, t) * moveDistance, rb.velocity.z);
         rb.velocity = vel * moveSpeed * 0.4f;

@@ -85,8 +85,6 @@ public class MovePlayer : MonoBehaviour
         reachedGoal = true;
         
         rb.velocity = new Vector3(0.0f, rb.velocity.y, 0.0f);
-        
-        StartCoroutine("GoalAnimation");
     }
     
     public void GiveScript(TapeScript tapeScript)
@@ -199,6 +197,7 @@ public class MovePlayer : MonoBehaviour
                 else
                 {
                     transform.eulerAngles = to;
+                    StartCoroutine("GoalAnimation");
                 }
                 
                 playerAnimation.SetBool("isMove", false);
@@ -207,20 +206,35 @@ public class MovePlayer : MonoBehaviour
             }
             else
             {
-                Vector3 to = new Vector3(0, 90, 0);
-                
-                if (transform.localRotation.eulerAngles.y !=  to.y)
+                var allStonesDone = true;
+                    
+                for (int a = 0; a < collectedStone; a++)
                 {
-                    transform.eulerAngles = Vector3.RotateTowards(this.transform.eulerAngles, to, 25.0f * Time.deltaTime, 2.0f);
-                    Debug.Log(transform.localRotation.eulerAngles.y);
+                    if (!stoneObj[a].GetComponent<StoneScript>().AnimationFinished())
+                    {
+                        allStonesDone = false;
+                    }
                 }
-                else
+                
+                if (allStonesDone)
                 {
-                    transform.eulerAngles = to;
+                    Vector3 to = new Vector3(0, 90, 0);
                     
-                    rb.velocity = new Vector3(speed, rb.velocity.y, 0.0f);
-                    
-                    playerAnimation.SetBool("isMove", true);
+                    if (transform.localRotation.eulerAngles.y !=  to.y)
+                    {
+                        transform.eulerAngles = Vector3.RotateTowards(this.transform.eulerAngles, to, 25.0f * Time.deltaTime, 2.0f);
+                        Debug.Log(transform.localRotation.eulerAngles.y);
+                    }
+                    else
+                    {
+                        transform.eulerAngles = to;
+                        
+                        rb.velocity = new Vector3(speed, rb.velocity.y, 0.0f);
+                        
+                        playerAnimation.SetBool("isComplete", false);
+                        playerAnimation.SetBool("isClear", false);
+                        playerAnimation.SetBool("isMove", true);
+                    }
                 }
             }
         }
@@ -585,12 +599,12 @@ public class MovePlayer : MonoBehaviour
     {
         for (int a = 0; a < collectedStone; a++)
         {
-            stoneObj[a].GetComponent<StoneScript>().StartResultAnim((a * 1.0f) - (a * 2.0f));  //計算式考えて
+            stoneObj[a].GetComponent<StoneScript>().StartResultAnim((float)a + 0.5f);  //計算式考えて
         }
         
         inputManager.SetGoalStatus();
         
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(3.0f + (((float)stoneNumInMap - 3.0f) * 0.5f));
         
         if (collectedStone == stoneNumInMap)
         {
@@ -607,8 +621,11 @@ public class MovePlayer : MonoBehaviour
     
     public void CheckAnimState()
     {
-        playerAnimation.SetBool("isComplete", false);
-        playerAnimation.SetBool("isClear", false);
         firstPartGoal = false;
+        
+        for (int a = 0; a < collectedStone; a++)
+        {
+            stoneObj[a].GetComponent<StoneScript>().ReturnToBag();  //計算式考えて
+        }
     }
 }
