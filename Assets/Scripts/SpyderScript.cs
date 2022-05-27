@@ -5,15 +5,10 @@ using UnityEngine;
 
 public class SpyderScript : MonoBehaviour
 {
-
-    [SerializeField]
-    [Tooltip("クモの落下速度")]
-    float fallspeed = 200.0f;
-
-    [SerializeField]
-    [Tooltip("クモがあがる速度")]
-    float crymspeed = 200.0f;
-
+    [Header("落ちる速度")]
+    [SerializeField] float Fallspeed = 4.0f;
+    [Header("あがる速度")]
+    [SerializeField] float Climbspeed = 2.0f;
     //リジッドボディー
     Rigidbody rb;
 
@@ -23,8 +18,27 @@ public class SpyderScript : MonoBehaviour
     //アニメーション
     private Animator anim;
 
+    private GameObject Spyder;
+
     //クモの初期位置
     private Vector3 StartPos;
+
+    private Vector3 TargetPos;
+    private Vector3 TargetPos2;
+
+    private bool Falling = false;
+
+    //private float Maxheight = 5.0f;
+    //private float Minheight = -5.0f;
+
+    //private float velocity = 0.0f;
+
+    private bool Otiru = false;
+
+    private float speed = 2.0f;
+
+    private bool climb = false;
+
 
     //プレイヤーがクモのいとに引っ掛けたかどうかの判定
     //bool touch = false;
@@ -43,110 +57,85 @@ public class SpyderScript : MonoBehaviour
         //オブジェクトのAnimatorコンポーネントを取得
         anim = GetComponentInChildren<Animator>();
 
+        Spyder = GameObject.FindWithTag("spyder");
         //初期位置の初期化
-        StartPos = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.transform.transform.position.z);
+        StartPos = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y  , this.transform.transform.position.z);
 
+        TargetPos = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y - 2.0f, this.gameObject.transform.position.z);
     }
 
     void FixedUpdate()
     {
-        //if (touch == true)
-        //{
-        //Vector3 force = new Vector3(0.0f, -0.5f * fallspeed, 0.0f);
+        if (climb == true)
+        {
+            anim.SetBool("Falling", false);
+            rb.velocity = Vector3.up * Climbspeed;
+        }
+        else
+        {
+            
+        }
 
-        //rb.AddForce(force, ForceMode.Force);
-
-
-        //} 
-        //if(touch == false)
-        //{
-        //    Vector3 force = new Vector3(0.0f, 0.5f * crymspeed, 0.0f);
-
-
-
-        //    if (rb.velocity.y > 5.0f)
-        //    {
-        //        this.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.transform.transform.position.z);
-
-        //    }
-
-        //}
-
-
+        if (this.transform.position.y >= StartPos.y)
+        {
+            this.transform.position = new Vector3(this.transform.position.x, StartPos.y, this.transform.position.z);
+        }
     }
 
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if(other.gameObject.tag == "player")
-    //    {
-    //        //Vector3 force = new Vector3(0.0f, -0.5f * fallspeed, 0.0f);
 
-    //        //rb.AddForce(force, ForceMode.Force);
-    //        //touch = true;
-    //    }
-    //}
 
     
 
     public void KumoGravity()
     {
-        Debug.Log("落ちてるよ！");
-     
-        Vector3 force = new Vector3(0.0f, -1.0f * fallspeed, 0.0f);
-
-        rb.AddForce(force, ForceMode.Force);
-
-        anim.SetBool("Falling", true);
-
-        if (gameObject.tag == "Ground")
+        climb = false;
+        if (this.transform.position.y > TargetPos.y)
         {
+            anim.SetBool("Falling", true);
+            rb.velocity = Vector3.down * Fallspeed;
+            //rb.velocity = new Vector3(0.0f, -1.0f * speed, 0.0f);
+        }
+        else
+        {
+
             rb.velocity = Vector3.zero;
         }
         
-        //rb.useGravity = true;
+        //else
+        //{
+        //    Debug.Log("落ち切った");
+        //    rb.velocity = Vector3.zero;
+        //}
+
+
+
+
     }
 
-    public void KumoCrym()
+    public void KumoClimb()
     {
-        Debug.Log("上がって");
+        climb = true;
 
-        Vector3 tikara = new Vector3(0.0f, 1.0f * crymspeed, 0.0f);
+            //rb.useGravity = false;
+            //Vector3 tikara = new Vector3(0.0f, 1.0f * crymspeed, 0.0f);
 
-        rb.AddForce(tikara, ForceMode.Force);
-        if (rb.velocity.y > 3.5f)
-        {
-            this.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.transform.transform.position.z);
-        }
-        anim.SetBool("Shaking", false);
-        anim.SetBool("Falling", true);
+            //rb.AddForce(tikara, ForceMode.Force);
 
 
 
-        //rb.useGravity = false;
+
+
+
+
+
     }
-        
 
-    //public void KumoShake()
-    //{
-    //    Debug.Log("揺れてる");
-        
-    //    anim.SetBool("Shaking", true);
-    //    anim.SetBool("Falling", false);
-
-    //    //クモを止まらせる
-    //    rb.velocity = Vector3.zero;
-    //}
-
+   
     public void SpyderDest()
     {
         Destroy(this.gameObject);
     }
-    //void OnTriggerEnter(Collider other)
-    //{
-
-    //    }
-    //}
-
+ 
 
 
 }

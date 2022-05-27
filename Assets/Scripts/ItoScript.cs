@@ -29,7 +29,6 @@ public class ItoScript : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             spyderScript.KumoGravity();
-
         }
 
     }
@@ -38,7 +37,7 @@ public class ItoScript : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            spyderScript.KumoCrym();
+            spyderScript.KumoClimb();
 
         }
 

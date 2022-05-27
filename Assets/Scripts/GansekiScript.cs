@@ -25,9 +25,8 @@ public class GansekiScript : MonoBehaviour
     //コライダー
     Collider col;
 
+    //再生成するための変数
     bool Restart = false;
-
-    bool Conti = false;
 
 
 
@@ -44,8 +43,10 @@ public class GansekiScript : MonoBehaviour
         //Rockとタグ付けされているゲームオブジェクトをさがして定義をボールにする
         //Sphere = GameObject.FindGameObjectWithTag("Player");
 
+        //ステージに配置した場所に戻る初期化
         StartPos = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.transform.transform.position.z );
 
+        //Restartをfalseにする
          Restart = false;
 
         //Conti = false;
@@ -55,35 +56,44 @@ public class GansekiScript : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        //力を設定
-        Vector3 force = new Vector3(0.5f * speed, 0.0f, 0.0f);
-
-        //力を加える
-        rb.AddForce(force , ForceMode.Force);
-
+         //再スタート
         if(Restart == true)
         {
+            this.transform.position = StartPos;
+            this.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+            rb.velocity = Vector3.zero;
             WaitTime += 1.0f;
             if (WaitTime >= 120.0f)
             {
                 WaitTime = 1.0f;
                 //Conti = true;
                 Restart = false;
-                 this.transform.position = new Vector3(StartPos.x, StartPos.y, StartPos.z);
+                this.transform.position = new Vector3(StartPos.x, StartPos.y, StartPos.z );
+                this.rb.velocity = new Vector3(0.0f, 0.0f, 0.0f);
+                this.rb.useGravity = true;
+
             }
         }
-        
-       
+        else
+        {
+            //力を設定
+            Vector3 force = new Vector3(0.5f * speed, 0.0f, 0.0f);
 
+            //力を加える
+            rb.AddForce(force, ForceMode.Force);
+        }
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Player" || other.gameObject.tag == "TapeBlock" || other.gameObject.tag == "sikaku")
+        if (other.gameObject.tag != "Ground")
         {
+            //this.transform.position = new Vector3(500.0f, -500.0f, 20.0f);
 
-            this.transform.position = new Vector3(-200.0f, -200.0f, -200.0f);
             Restart = true;
+        }
+            
+        
             //見えなくする
        
        
@@ -102,9 +112,6 @@ public class GansekiScript : MonoBehaviour
             
             //Restart = false;
             //Destroy(this.gameObject);
-
-           
-        }
        
            
         

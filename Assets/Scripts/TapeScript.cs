@@ -439,7 +439,7 @@ public class TapeScript : MonoBehaviour
 
         if(douzouScript != null)
         {
-            douzouScript.DouzouDset();
+            douzouScript.DouzouDest();
         }
 
         if(spyderScript != null)

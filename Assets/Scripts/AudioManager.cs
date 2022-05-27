@@ -7,6 +7,9 @@ public class AudioManager : MonoBehaviour
     AudioSource bgmAudioSource;
     AudioSource seAudioSource;
     
+    private float bgmOptionVolume = 1.0f;
+    private float seOptionVolume = 1.0f;
+    
     [Header("メインBGM")]
     [SerializeField] AudioClip bgmClip = null;
     [SerializeField] [Range(0.0f, 1.0f)] float bgmVolume = 1.0f;
@@ -268,12 +271,16 @@ public class AudioManager : MonoBehaviour
     
     private void PlaySE(AudioClip aClip, float aVolume)
     {   
+        aVolume = aVolume * seOptionVolume / 5;
         seAudioSource.PlayOneShot(aClip, aVolume);
     }
 
     // Update is called once per frame
     void Update()
     {
+        bgmOptionVolume = (float)TitleCameraScript.bgmvolume;
+        seOptionVolume = (float)TitleCameraScript.sevolume;
         
+        bgmAudioSource.volume = (bgmVolume * bgmOptionVolume / 5);
     }
 }
