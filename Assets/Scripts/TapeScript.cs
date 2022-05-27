@@ -381,47 +381,91 @@ public class TapeScript : MonoBehaviour
                 {
                     if (fastPull)
                     {
-                        float dA = tapeSize.z / Vector3.Distance(collidingTapes[a].transform.position, this.transform.position);
-                        Vector3 p = this.transform.position + (collidingTapes[a].transform.position - this.transform.position) * dA; // eq: p`= p + direction * time
+                        if (collidingTapes[a].transform.parent.eulerAngles.z == 0)
+                        {
+                            float dA = tapeSize.z / Vector3.Distance(collidingTapes[a].transform.position, this.transform.position);
+                            Vector3 p = this.transform.position + (collidingTapes[a].transform.position - this.transform.position) * dA; // eq: p`= p + direction * time
+                            
+                            var colTapeLength = collidingTapes[a].transform.GetChild(5).GetComponent<Renderer>().bounds.size.magnitude;
+                            
+                            var topCoordinate = collidingTapes[a].transform.position.x + (colTapeLength / 2.0f);
+                            
+                            var topTapeSize = topCoordinate - (p.x + (tapeSize.x / 2.0f));
+                            var topTapeCenter = topCoordinate - (topTapeSize / 2.0f);
+                            topTapeSize = topTapeSize / colTapeLength * collidingTapes[a].transform.localScale.magnitude;
+                            
+                            var botCoordinate = collidingTapes[a].transform.position.x - (colTapeLength / 2.0f);
+                            
+                            var botTapeSize = (colTapeLength - topTapeSize) - tapeSize.x;
+                            var botTapeCenter = botCoordinate + (botTapeSize / 2.0f);
+                            botTapeSize = botTapeSize / colTapeLength * collidingTapes[a].transform.localScale.magnitude;
+                            
+                            
+                            GameObject objTemp = collidingTapes[a];
+                            objTemp.transform.localScale = new Vector3(collidingTapes[a].transform.localScale.x, collidingTapes[a].transform.localScale.y, topTapeSize);
+                            
+                            GameObject obj1 = Instantiate(objTemp, new Vector3(topTapeCenter, collidingTapes[a].transform.position.y, collidingTapes[a].transform.position.z), Quaternion.identity);
+                            obj1.transform.localRotation = Quaternion.Euler(0.0f, collidingTapes[a].transform.localRotation.eulerAngles.y, collidingTapes[a].transform.localRotation.eulerAngles.z);
+                            
+                            GameObject objTempTwo = collidingTapes[a];
+                            objTempTwo.transform.localScale = new Vector3(collidingTapes[a].transform.localScale.x, collidingTapes[a].transform.localScale.y, botTapeSize);
+                            
+                            GameObject obj2 = Instantiate(objTempTwo, new Vector3(botTapeCenter, collidingTapes[a].transform.position.y, collidingTapes[a].transform.position.z), Quaternion.identity);
+                            obj2.transform.localRotation = Quaternion.Euler(0.0f, collidingTapes[a].transform.localRotation.eulerAngles.y, collidingTapes[a].transform.localRotation.eulerAngles.z);
+                            
+                            GameObject objParent1 = new GameObject(obj1.name + "Parent");
+                            objParent1.transform.position = obj1.transform.position;
+                            obj1.transform.parent = objParent1.transform;
+                            
+                            GameObject objParent2 = new GameObject(obj2.name + "Parent");
+                            objParent2.transform.position = obj2.transform.position;
+                            obj2.transform.parent = objParent2.transform;
+                            
+                            Destroy(collidingTapes[a]);
+                        }
+                        else
+                        {
+                            float dA = tapeSize.z / Vector3.Distance(collidingTapes[a].transform.position, this.transform.position);
+                            Vector3 p = this.transform.position + (collidingTapes[a].transform.position - this.transform.position) * dA; // eq: p`= p + direction * time
+                            
+                            var colTapeLength = collidingTapes[a].transform.GetChild(5).GetComponent<Renderer>().bounds.size.magnitude;
+                            
+                            var topCoordinate = collidingTapes[a].transform.position.y + (colTapeLength / 2.0f);
+                            
+                            var topTapeSize = topCoordinate - (p.y + (tapeSize.y / 2.0f));
+                            var topTapeCenter = topCoordinate - (topTapeSize / 2.0f);
+                            topTapeSize = topTapeSize / colTapeLength * collidingTapes[a].transform.localScale.magnitude;
+                            
+                            var botCoordinate = collidingTapes[a].transform.position.y - (colTapeLength / 2.0f);
+                            
+                            var botTapeSize = (colTapeLength - topTapeSize) - tapeSize.y;
+                            var botTapeCenter = botCoordinate + (botTapeSize / 2.0f);
+                            botTapeSize = botTapeSize / colTapeLength * collidingTapes[a].transform.localScale.magnitude;
+                            
+                            
+                            GameObject objTemp = collidingTapes[a];
+                            objTemp.transform.localScale = new Vector3(collidingTapes[a].transform.localScale.x, collidingTapes[a].transform.localScale.y, topTapeSize);
+                            
+                            GameObject obj1 = Instantiate(objTemp, new Vector3(collidingTapes[a].transform.position.x, topTapeCenter, collidingTapes[a].transform.position.z), Quaternion.identity);
+                            obj1.transform.localRotation = Quaternion.Euler(90.0f, collidingTapes[a].transform.localRotation.eulerAngles.y, collidingTapes[a].transform.localRotation.eulerAngles.z);
+                            
+                            GameObject objTempTwo = collidingTapes[a];
+                            objTempTwo.transform.localScale = new Vector3(collidingTapes[a].transform.localScale.x, collidingTapes[a].transform.localScale.y, botTapeSize);
+                            
+                            GameObject obj2 = Instantiate(objTempTwo, new Vector3(collidingTapes[a].transform.position.x, botTapeCenter, collidingTapes[a].transform.position.z), Quaternion.identity);
+                            obj2.transform.localRotation = Quaternion.Euler(90.0f, collidingTapes[a].transform.localRotation.eulerAngles.y, collidingTapes[a].transform.localRotation.eulerAngles.z);
+                            
+                            GameObject objParent1 = new GameObject(obj1.name + "Parent");
+                            objParent1.transform.position = obj1.transform.position;
+                            obj1.transform.parent = objParent1.transform;
+                            
+                            GameObject objParent2 = new GameObject(obj2.name + "Parent");
+                            objParent2.transform.position = obj2.transform.position;
+                            obj2.transform.parent = objParent2.transform;
+                            
+                            Destroy(collidingTapes[a]);
+                        }
                         
-                        var colTapeLength = collidingTapes[a].transform.GetChild(5).GetComponent<Renderer>().bounds.size.magnitude;
-                        
-                        var topCoordinate = collidingTapes[a].transform.position.y + (colTapeLength / 2.0f);
-                        
-                        var topTapeSize = topCoordinate - (p.y + (tapeSize.y / 2.0f));
-                        var topTapeCenter = topCoordinate - (topTapeSize / 2.0f);
-                        topTapeSize = topTapeSize / colTapeLength * collidingTapes[a].transform.localScale.magnitude;
-                        
-                        var botCoordinate = collidingTapes[a].transform.position.y - (colTapeLength / 2.0f);
-                        
-                        var botTapeSize = (colTapeLength - topTapeSize) - tapeSize.y;
-                        var botTapeCenter = botCoordinate + (botTapeSize / 2.0f);
-                        botTapeSize = botTapeSize / colTapeLength * collidingTapes[a].transform.localScale.magnitude;
-                        
-                        Debug.Log(topTapeSize);
-                        Debug.Log(botTapeSize);
-                        
-                        GameObject objTemp = collidingTapes[a];
-                        objTemp.transform.localScale = new Vector3(collidingTapes[a].transform.localScale.x, collidingTapes[a].transform.localScale.y, topTapeSize);
-                        
-                        GameObject obj1 = Instantiate(objTemp, new Vector3(collidingTapes[a].transform.position.x, topTapeCenter, collidingTapes[a].transform.position.z), Quaternion.identity);
-                        obj1.transform.localRotation = Quaternion.Euler(90.0f, collidingTapes[a].transform.localRotation.eulerAngles.y, collidingTapes[a].transform.localRotation.eulerAngles.z);
-                        
-                        GameObject objTempTwo = collidingTapes[a];
-                        objTempTwo.transform.localScale = new Vector3(collidingTapes[a].transform.localScale.x, collidingTapes[a].transform.localScale.y, botTapeSize);
-                        
-                        GameObject obj2 = Instantiate(objTempTwo, new Vector3(collidingTapes[a].transform.position.x, botTapeCenter, collidingTapes[a].transform.position.z), Quaternion.identity);
-                        obj2.transform.localRotation = Quaternion.Euler(90.0f, collidingTapes[a].transform.localRotation.eulerAngles.y, collidingTapes[a].transform.localRotation.eulerAngles.z);
-                        
-                        GameObject objParent1 = new GameObject(obj1.name + "Parent");
-                        objParent1.transform.position = obj1.transform.position;
-                        obj1.transform.parent = objParent1.transform;
-                        
-                        GameObject objParent2 = new GameObject(obj2.name + "Parent");
-                        objParent2.transform.position = obj2.transform.position;
-                        obj2.transform.parent = objParent2.transform;
-                        
-                        Destroy(collidingTapes[a]);
                     }
                     else
                     {
