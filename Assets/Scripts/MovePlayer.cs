@@ -332,7 +332,7 @@ public class MovePlayer : MonoBehaviour
             {   
                 if (fastPull)
                 {
-                    tapeHold.SetSpeed(true, tearSpeed);
+                    tapeHold.SetSpeed(true, tearSpeed * 5.0f);
                     
                     if (direction == 0 || direction == 1)
                     {

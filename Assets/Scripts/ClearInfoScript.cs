@@ -39,11 +39,6 @@ public class ClearInfoScript : MonoBehaviour
     {
         scores = XMLManager.instance.LoadScores();
         
-        for (int a = 0; a < scores.Count; a++)
-        {
-            Debug.Log(scores[a].WorldNum + "  " + scores[a].StageNum + "  " + scores[a].StoneNum + "  " + scores[a].IsCleared);
-        }
-        
         worldNumber = 1;
         stageNumber = 2;
     }
