@@ -447,7 +447,7 @@ public class MovePlayer : MonoBehaviour
             transform.SetParent(other.transform);
         }
         
-        if (other.gameObject.tag == "Enemy" && !invincible)     //ここに敵のタグ入れる
+        if ((other.gameObject.tag == "Enemy"|| other.gameObject.tag == "douzou"|| other.gameObject.tag == "spyder"  ) && !invincible)     //ここに敵のタグ入れる
         {
             if (collectedStone > 0)
             {
