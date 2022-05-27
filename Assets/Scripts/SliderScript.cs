@@ -47,9 +47,6 @@ public class SliderScript : MonoBehaviour
     {
         slideSpeed = 1.0f / holdTime * Time.deltaTime;
         
-        Debug.Log(slideSpeed);
-        Debug.Log(slideValue + "  value");
-        
         if (beingPressed && !stop)
         {
             slideValue += slideSpeed;

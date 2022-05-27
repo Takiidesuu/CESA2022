@@ -371,23 +371,17 @@ public class TapeScript : MonoBehaviour
     {
         playerScript.FinishPulling();
         
-        if (!fastPull)
+        for (int a = 0; a < collidingTapes.Count; a++)
         {
-            for (int a = 0; a < collidingTapes.Count; a++)
+            if (collidingTapes[a] != null)
             {
-                if (collidingTapes[a] != null)
+                if (collidingTapes[a].transform.parent.eulerAngles.z == this.transform.parent.eulerAngles.z)
                 {
                     collidingTapes[a].GetComponent<TapeScript>().SetDirection(direction);
                     collidingTapes[a].GetComponent<TapeScript>().SetPull(true);
-                    collidingTapes[a].GetComponent<TapeScript>().SetSpeed(!fastPull, nextPullSpeed);
+                    collidingTapes[a].GetComponent<TapeScript>().SetSpeed(fastPull, pullSpeed);
                 }
-            }
-        }
-        else
-        {
-            for (int a = 0; a < collidingTapes.Count; a++)
-            {
-                if (collidingTapes[a] != null)
+                else
                 {
                     float dA = tapeSize.z / Vector3.Distance(collidingTapes[a].transform.position, this.transform.position);
                     Vector3 p = this.transform.position + (collidingTapes[a].transform.position - this.transform.position) * dA; // eq: p`= p + direction * time

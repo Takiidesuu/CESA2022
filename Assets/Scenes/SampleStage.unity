@@ -574,6 +574,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1842325425, guid: d8a773e4c407bab4d890b2df9ee6d9e2, type: 3}
+      propertyPath: tearSpeed
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1842325428, guid: d8a773e4c407bab4d890b2df9ee6d9e2, type: 3}
       propertyPath: m_CollisionDetection
       value: 1
@@ -3932,7 +3936,7 @@ GameObject:
   - component: {fileID: 2018810383}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: Canvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

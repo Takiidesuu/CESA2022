@@ -10,6 +10,8 @@ public class TapeBlock : MonoBehaviour
     Rigidbody rb;
     Collider col;
     
+    Vector3 vel;
+    
     float targetPos;
     
     GameObject tape;
@@ -36,6 +38,8 @@ public class TapeBlock : MonoBehaviour
         
         targetPos = this.transform.transform.position.z - 3.3f;
         
+        vel = new Vector3(0.0f, 0.0f, -speed);
+        
         hold = true;
     }
 
@@ -61,8 +65,6 @@ public class TapeBlock : MonoBehaviour
             
             if (moveObj)
             {
-                Vector3 vel = new Vector3(0.0f, 0.0f, -speed);
-                
                 rb.velocity = vel;
                 
                 if (playMusic)
@@ -82,6 +84,25 @@ public class TapeBlock : MonoBehaviour
         else
         {
             
+        }
+    }
+    
+    private void OnCollisionEnter(Collision other) 
+    {
+        if (other.gameObject.tag == "Player" && moveObj)
+        {
+            if (other.gameObject.transform.position.z < this.transform.position.z)
+            {
+                vel = new Vector3(0.0f, 0.0f, 0.0f);
+            }
+        }
+    }
+    
+    private void OnCollisionExit(Collision other) 
+    {
+        if (other.gameObject.tag == "Player" && moveObj)
+        {
+            vel = new Vector3(0.0f, 0.0f, -speed);
         }
     }
 }
