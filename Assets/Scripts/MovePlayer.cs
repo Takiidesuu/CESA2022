@@ -39,6 +39,7 @@ public class MovePlayer : MonoBehaviour
     Collider col;   //コライダー
     
     private int direction = 0;
+    private int tapeDirection = 0;
     
     private bool isPulling = false;
     private bool fastPull = false;
@@ -61,6 +62,8 @@ public class MovePlayer : MonoBehaviour
     GameObject[] stoneObj;
     
     MoveCamera cameraScript;
+    
+    EffectManager effectManager;
     
     public int GetStoneNum()
     {
@@ -88,9 +91,22 @@ public class MovePlayer : MonoBehaviour
         rb.velocity = new Vector3(0.0f, rb.velocity.y, 0.0f);
     }
     
-    public void GiveScript(TapeScript tapeScript)
+    public void GiveScript(TapeScript tapeScript, float rotation)
     {
         tapeHold = tapeScript;
+        
+        if (rotation == 0.0f)
+        {
+            tapeDirection = 0;
+        }
+        else if (rotation == 90.0f)
+        {
+            tapeDirection = 1;
+        }
+        else if (rotation == -90.0f)
+        {
+            tapeDirection = -1;
+        }
     }
     
     public bool IsPulling()
@@ -140,6 +156,8 @@ public class MovePlayer : MonoBehaviour
         stoneObj = new GameObject[10];
         
         cameraScript = FindObjectOfType<Camera>().GetComponent<MoveCamera>();
+        
+        effectManager = GameObject.FindGameObjectWithTag("EffectManager").GetComponent<EffectManager>();
     }
     
     // Update is called once per frame
@@ -171,7 +189,7 @@ public class MovePlayer : MonoBehaviour
             
             if (Physics.Raycast(this.transform.position, Vector3.down, out hit, 1.0f, layerMask) || (Physics.Raycast(this.transform.position + (Vector3.up * 0.2f), Vector3.down, out hit, 1.0f, layerMask2)))
             {
-                if (hit.distance < 1.0f)
+                if (hit.distance < 0.3f)
                 {
                     grounded = true;
                 }
@@ -239,6 +257,10 @@ public class MovePlayer : MonoBehaviour
             playerAnimation.SetBool("FastPullLeft", false);
             playerAnimation.SetBool("SlowPullRight", false);
             playerAnimation.SetInteger("SlowPullLeft", 0);
+            playerAnimation.SetBool("FastPullUp", false);
+            playerAnimation.SetBool("SlowPullUp", false);
+            playerAnimation.SetBool("SlowPullDown", false);
+            playerAnimation.SetBool("FastPullDown", false);
             
             playerAnimation.SetBool("isGrab", isPulling);
 
@@ -328,7 +350,26 @@ public class MovePlayer : MonoBehaviour
                 transform.eulerAngles = to;
             }
             
-            if (pullVec.x != 0.0f && !inFreeze)
+            var pullPower = 0.0f;
+            
+            if (pullVec.x != 0.0f && tapeDirection == 0)
+            {
+                pullPower = pullVec.x;
+            }
+            else if (pullVec.y != 0.0f)
+            {
+                if (tapeDirection == 1)
+                {
+                    pullPower = pullVec.y;
+                }
+                else if (tapeDirection == -1)
+                {
+                    pullPower = pullVec.y * -1.0f;
+                }
+            }
+            
+            
+            if (pullPower != 0.0f && !inFreeze)
             {   
                 if (fastPull)
                 {
@@ -336,31 +377,75 @@ public class MovePlayer : MonoBehaviour
                     
                     if (direction == 0 || direction == 1)
                     {
-                        playerAnimation.SetBool("FastPullRight", true);
+                        switch (tapeDirection)
+                        {
+                        case 0:
+                            playerAnimation.SetBool("FastPullRight", true);
+                            break;
+                        case 1:
+                            playerAnimation.SetBool("FastPullUp", true);    
+                            break;
+                        case -1:
+                            playerAnimation.SetBool("FastPullDown", true);
+                            break;
+                        }
                     }
                     else
                     {
-                        playerAnimation.SetBool("FastPullLeft", true);
+                        switch (tapeDirection)
+                        {
+                        case 0:
+                            playerAnimation.SetBool("FastPullRight", true);
+                            break;
+                        case 1:
+                            playerAnimation.SetBool("FastPullDown", true);
+                            break;
+                        case -1:
+                            playerAnimation.SetBool("FastPullUp", true);
+                            break;
+                        }
                     }
                 }
                 else
                 {
                     StopCoroutine("HoldPull");
                     tapeHold.SetSpeed(false, tearSpeed);
-                    tapeHold.SlowPull(pullVec.x);
+                    tapeHold.SlowPull(pullPower);
                     slideScript.StopInc();
+                    
                     if (direction == 0 || direction == 1)
                     {
-                        playerAnimation.SetBool("SlowPullRight", true);
-                        playerAnimation.SetBool("isGrab", false);
+                        switch (tapeDirection)
+                        {
+                        case 0:
+                            playerAnimation.SetBool("SlowPullRight", true);
+                            break;
+                        case 1:
+                            playerAnimation.SetBool("SlowPullUp", true);
+                            break;
+                        case -1:
+                            playerAnimation.SetBool("SlowPullDown", true);
+                            break;
+                        }
                     }
                     else
                     {
-                        playerAnimation.SetInteger("SlowPullLeft", 1);
-                        playerAnimation.SetBool("isGrab", false);
+                        switch (tapeDirection)
+                        {
+                        case 0:
+                            playerAnimation.SetInteger("SlowPullLeft", 1);
+                            break;
+                        case 1:
+                            playerAnimation.SetBool("SlowPullDown", true);
+                            break;
+                        case -1:
+                            playerAnimation.SetBool("SlowPullUp", true);    
+                            break;
+                        }
                     }
                     
-                    playerAnimation.speed = Mathf.Abs(pullVec.x);
+                    playerAnimation.SetBool("isGrab", false);
+                    playerAnimation.speed = Mathf.Abs(pullPower);
                 }
                 
                 finishTearFlg = false;
@@ -534,6 +619,10 @@ public class MovePlayer : MonoBehaviour
     
     private void OnTriggerEnter(Collider other) 
     {
+        if (other.gameObject.tag == "Tape")
+        {
+            tapeHold = other.gameObject.transform.parent.gameObject.GetComponent<TapeScript>();
+        }
         
     }
     
@@ -578,8 +667,10 @@ public class MovePlayer : MonoBehaviour
         switch (other.gameObject.tag)
         {
             case "Tape":
+                Debug.Log("exit");
                 inRange = false;
                 StopPull();
+                tapeHold = null;
                 break;
         }
     }
@@ -599,12 +690,16 @@ public class MovePlayer : MonoBehaviour
         {
             playerAnimation.SetBool("isComplete", true);
         }
+        else if (collectedStone > 0)
+        {
+            playerAnimation.SetBool("isClear2", true);
+        }
         else
         {
             playerAnimation.SetBool("isClear", true);
         }
         
-        
+        Instantiate(effectManager.GetGoalStoneEffect(), new Vector3(this.transform.position.x, this.transform.position.y + 1.5f, this.transform.position.z + 0.5f), Quaternion.identity);
         ClearInfoScript.instance.SaveStageState(collectedStone, true);
     }
     

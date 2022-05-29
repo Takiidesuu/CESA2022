@@ -15,17 +15,9 @@ public class EffectManager : MonoBehaviour
     
     [Header("石盤獲得時のエフェクト")]
     [SerializeField] private GameObject getStonePartObj;
-    
-    /* private ParticleSystem rockEffect;
-    private ParticleSystem tapeEffect;
-    private ParticleSystem stoneEffect;
 
-    private void Start() 
-    {
-        rockEffect = rockPartObj.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>();
-        tapeEffect = tapePartObj.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>();
-        stoneEffect = stonePartObj.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>();
-    } */
+    [Header("石盤ゴール時のエフェクト")]
+    [SerializeField] private GameObject getGoalStoneObj;
 
     public GameObject GetRockEffect()
     {
@@ -45,5 +37,9 @@ public class EffectManager : MonoBehaviour
     public GameObject GetAchieveStoneEffect()
     {
         return getStonePartObj;
+    }
+    public GameObject GetGoalStoneEffect()
+    {
+        return getGoalStoneObj;
     }
 }

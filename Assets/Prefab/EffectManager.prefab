@@ -43,7 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf4ef216cf3bc504b8bb35775ac8d72c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rockPartObj: {fileID: 5511539963299612794, guid: 0bdb195deca57894d8d2ae5425ee46eb, type: 3}
-  tapePartObj: {fileID: 5511539963299612794, guid: 0bdb195deca57894d8d2ae5425ee46eb, type: 3}
+  rockPartObj: {fileID: 125328011389030594, guid: 360b34d59399ee340a72f346ca87d985, type: 3}
+  tapePartObj: {fileID: 125328011389030594, guid: 360b34d59399ee340a72f346ca87d985, type: 3}
   stonePartObj: {fileID: 613739443065021445, guid: b7ba12fcbe1f79546b186c0a33637bbf, type: 3}
   getStonePartObj: {fileID: 8100256627072313804, guid: 3425f2cb973b9e044861d34a83142bd2, type: 3}
+  getGoalStoneObj: {fileID: 1616808112568864004, guid: ca820327e4ec8eb4cb77e0f971f65116, type: 3}

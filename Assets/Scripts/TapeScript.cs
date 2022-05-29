@@ -50,6 +50,8 @@ public class TapeScript : MonoBehaviour
         public Quaternion startingAngle;
     }
     
+    private Vector3 startingScale;
+    
     private JointData[] jointObj;      //関節のオブジェクト
     int jointNum = 5;           //関数の数
 
@@ -108,8 +110,6 @@ public class TapeScript : MonoBehaviour
             }
             
             canPull = false;
-            
-            GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>().PlayTearSE();
         }
     }
     
@@ -127,7 +127,7 @@ public class TapeScript : MonoBehaviour
         tapeSize = transform.GetChild(5).GetComponent<Renderer>().bounds.size;
 
         //テープコライダーのサイズをテープのサイズで決める
-        Vector3 colSize = new Vector3(tapeSize.y, 1.0f, 1.0f);
+        Vector3 colSize = new Vector3(1.0f, 4.0f, 1.0f);
         
         jointNum = 5;
         
@@ -137,7 +137,7 @@ public class TapeScript : MonoBehaviour
         }
 
         this.GetComponent<BoxCollider>().size = colSize;    //テープコライダーのサイズを指定
-        this.GetComponent<BoxCollider>().center = new Vector3(0.0f, 0.5f, 0.0f);   //テープコライダーの位置を指定
+        this.GetComponent<BoxCollider>().center = new Vector3(0.0f, 0.0f, 0.0f);   //テープコライダーの位置を指定
     }
 
     // Start is called before the first frame update
@@ -145,6 +145,8 @@ public class TapeScript : MonoBehaviour
     {
         var tapeLength = tapeSize.magnitude;
         float tapeHeight;
+        
+        startingScale = transform.localScale;
         
         if (this.transform.parent.localRotation.eulerAngles.z == 90 || this.transform.parent.localRotation.eulerAngles.z == -90)
         {
@@ -160,7 +162,7 @@ public class TapeScript : MonoBehaviour
         pointCol = new BoxCollider[4];
 
         //敵の変数をタグ付け
-        Dguu = GameObject.FindWithTag("sikaku");
+        Dguu = GameObject.FindWithTag("douzou");
         Spyder = GameObject.FindWithTag("spyder");
         KabeKnight = GameObject.FindWithTag("soad");
 
@@ -222,6 +224,19 @@ public class TapeScript : MonoBehaviour
         pointObj[3].transform.localPosition = new Vector3((0.569f - 0.25f) * -1.0f, 0.0f, 0.344f);
         pointCol[3].size = new Vector3(0.08f, 0.5f, 9.0f);
         //pointObj[3].SetActive(downRightPoint);
+        
+        if (this.transform.parent.localRotation.eulerAngles.z == 90 || this.transform.parent.localRotation.eulerAngles.z == -90)
+        {
+            pointCol[0].size = new Vector3(0.06f, 1.0f, 9.0f);
+            pointCol[1].size = new Vector3(0.06f, 1.0f, 9.0f);
+            pointCol[2].size = new Vector3(0.06f, 1.0f, 9.0f);
+            pointCol[3].size = new Vector3(0.06f, 1.0f, 9.0f);
+            
+            pointCol[0].center = new Vector3(0.0f, 0.15f, -4.75f);
+            pointCol[1].center = new Vector3(0.0f, -0.15f, -4.75f);
+            pointCol[2].center = new Vector3(0.0f, 0.15f, -4.75f);
+            pointCol[3].center = new Vector3(0.0f, -0.15f, -4.75f);
+        }
     }
 
     // Update is called once per frame
@@ -245,7 +260,7 @@ public class TapeScript : MonoBehaviour
         {
             playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<MovePlayer>();
 
-            playerScript.GiveScript(this);
+            playerScript.GiveScript(this, transform.parent.eulerAngles.z);
 
             for (int a = 0; a < 4; a++)
             {
@@ -295,6 +310,7 @@ public class TapeScript : MonoBehaviour
                     else
                     {
                         FinishedPulling();
+                        GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>().PlayTearSE();
                     }
                 }
             }
@@ -310,6 +326,8 @@ public class TapeScript : MonoBehaviour
             pointObj[1].SetActive(downLeftPoint);
             pointObj[2].SetActive(upRightPoint);
             pointObj[3].SetActive(downRightPoint); */
+            
+            this.transform.localScale = startingScale;
         }
     }
     
@@ -320,6 +338,7 @@ public class TapeScript : MonoBehaviour
             if (direction == 2 || direction == 3)
             {
                 inputValue = Mathf.Abs(inputValue);
+                Debug.Log(inputValue + "    " + angleInfo);
             }
             
             if (angleInfo <= maxAngle)
@@ -531,9 +550,6 @@ public class TapeScript : MonoBehaviour
         
             for (int a = 0; a < 4; a++)
             {
-                pointCol[a].center = new Vector3(0.0f, 0.0f, -4.75f);
-                pointCol[a].size = new Vector3(0.06f, 0.5f, 9.0f);
-                
                 pointObj[a].SetActive(true);
             }
             
@@ -563,7 +579,7 @@ public class TapeScript : MonoBehaviour
             }
         }
 
-        if (other.gameObject.tag == "sikaku")
+        if (other.gameObject.tag == "douzou")
         {
             if(DouzouGetflag == false)
             {
@@ -607,7 +623,7 @@ public class TapeScript : MonoBehaviour
             inRange = false;
         }
 
-        if(other.gameObject.tag == "sikaku")
+        if(other.gameObject.tag == "douzou")
         {
             DouzouGetflag = false;
         }

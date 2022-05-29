@@ -27,6 +27,8 @@ TagManager:
   - soad
   - sikaku
   - spyder
+  - TapeCheck
+  - douzou
   layers:
   - Default
   - TransparentFX
