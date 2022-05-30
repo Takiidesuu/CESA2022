@@ -75,5 +75,27 @@ public class MoveTetubo : MonoBehaviour
             StartCoroutine("HoldPosition");
             move = false;
         }
+        
+        if (other.gameObject.tag == "Player")
+        {
+            if (this.transform.eulerAngles.z == 0.0f || this.transform.eulerAngles.z == 180.0f)
+            {
+                float dir;
+                if (other.gameObject.transform.position.x < this.transform.position.x)
+                {
+                    dir = -1.0f;
+                }
+                else if (other.gameObject.transform.position.x > this.transform.position.x)
+                {
+                    dir = 1.0f;
+                }
+                else
+                {
+                    dir = Random.Range(-1.0f, 1.0f);
+                }
+            
+                other.gameObject.transform.position = new Vector3(other.gameObject.transform.position.x + (Mathf.Sign(dir) * 1.0f), other.gameObject.transform.position.y, 0.0f);
+            }
+        }
     }
 }
