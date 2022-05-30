@@ -8,7 +8,7 @@ public class ClearInfoScript : MonoBehaviour
     
     public static ClearInfoScript instance;
     
-    private int worldNumber, stageNumber = 0;
+    private int worldNumber, stageNumber = 1;
     
     private void Awake() 
     {
@@ -54,6 +54,11 @@ public class ClearInfoScript : MonoBehaviour
     public void SaveStageState(int stNum, bool isClear)
     {
         var index = ((worldNumber - 1)) * 5 + (stageNumber - 1);
+        
+        if (index < 0)
+        {
+            index = 0;
+        }
         
         if (!scores[index].IsCleared)
         {
