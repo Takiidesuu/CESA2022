@@ -704,6 +704,8 @@ public class MovePlayer : MonoBehaviour
         Instantiate(effectManager.GetGoalStoneEffect(), new Vector3(this.transform.position.x, this.transform.position.y + 1.5f, this.transform.position.z + 0.5f), Quaternion.identity);
         ClearInfoScript.instance.SaveStageState(collectedStone, true);
         
+        ClearInfoScript.instance.NextStageNum();
+        
         audioManager.SetGameOver();
     }
     

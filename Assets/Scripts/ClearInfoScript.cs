@@ -21,6 +21,14 @@ public class ClearInfoScript : MonoBehaviour
         stageNumber = sNum;
     }
     
+    public void NextStageNum()
+    {
+        if (stageNumber < 5)
+        {
+            stageNumber++;
+        }
+    }
+    
     public void CreateSave()
     {
         for (int world = 1; world < 6; world++)
@@ -45,25 +53,18 @@ public class ClearInfoScript : MonoBehaviour
     
     public void SaveStageState(int stNum, bool isClear)
     {
-        if (!scores.Contains(new ClearInfo{WorldNum = worldNumber, StageNum = stageNumber}))
+        var index = ((worldNumber - 1)) * 5 + (stageNumber - 1);
+        
+        if (!scores[index].IsCleared)
         {
-            scores.Add(new ClearInfo {WorldNum = worldNumber, StageNum = stageNumber, StoneNum = stNum, IsCleared = isClear});
+            scores[index].StoneNum = stNum;
+            scores[index].IsCleared = isClear;
         }
-        else if (scores.Contains(new ClearInfo{WorldNum = worldNumber, StageNum = stageNumber}))
+        else if (scores[index].IsCleared)
         {
-            var index = scores.IndexOf(new ClearInfo{WorldNum = worldNumber, StageNum = stageNumber});
-            
-            if (!scores[index].IsCleared)
+            if (scores[index].StoneNum < stNum)
             {
                 scores[index].StoneNum = stNum;
-                scores[index].IsCleared = isClear;
-            }
-            else if (scores[index].IsCleared)
-            {
-                if (scores[index].StoneNum < stNum)
-                {
-                    scores[index].StoneNum = stNum;
-                }
             }
         }
         
