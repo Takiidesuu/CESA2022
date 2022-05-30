@@ -10,6 +10,8 @@ public class AudioManager : MonoBehaviour
     private float bgmOptionVolume = 1.0f;
     private float seOptionVolume = 1.0f;
     
+    private bool fadeOut = false;
+    
     [Header("メインBGM")]
     [SerializeField] AudioClip bgmClip = null;
     [SerializeField] [Range(0.0f, 1.0f)] float bgmVolume = 1.0f;
@@ -107,7 +109,16 @@ public class AudioManager : MonoBehaviour
     [Header("風SE")]
     [SerializeField] AudioClip windSE = null;
     [SerializeField] [Range(0.0f, 1.0f)] float windVolume = 1.0f;
-    
+
+    [Header("リザルト")]
+    [SerializeField] AudioClip resultSE = null;
+    [SerializeField] [Range(0.0f, 1.0f)] float resultVolume = 1.0f;
+
+    [Header("ゲームオーバー")]
+    [SerializeField] AudioClip gameoverSE = null;
+    [SerializeField] [Range(0.0f, 1.0f)] float gameoverVolume = 1.0f;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -268,19 +279,41 @@ public class AudioManager : MonoBehaviour
     {
         PlaySE(rockCrashSE, rockCrashVolume);
     }
-    
+
+    public void PlayResultSE()
+    {
+        PlaySE(resultSE, resultVolume);
+    }
+
+    public void PlayGmeOverSE()
+    {
+        PlaySE(gameoverSE, gameoverVolume);
+    }
+
     private void PlaySE(AudioClip aClip, float aVolume)
     {   
         aVolume = aVolume * seOptionVolume / 5;
         seAudioSource.PlayOneShot(aClip, aVolume);
     }
+    
+    public void SetGameOver()
+    {
+        fadeOut = true;
+    }
 
     // Update is called once per frame
     void Update()
     {
-        bgmOptionVolume = (float)TitleCameraScript.bgmvolume;
-        seOptionVolume = (float)TitleCameraScript.sevolume;
-        
-        bgmAudioSource.volume = (bgmVolume * bgmOptionVolume / 5);
+        if (!fadeOut)
+        {
+            bgmOptionVolume = (float)TitleCameraScript.bgmvolume;
+            seOptionVolume = (float)TitleCameraScript.sevolume;
+            
+            bgmAudioSource.volume = (bgmVolume * bgmOptionVolume / 5);
+        }
+        else
+        {
+            bgmAudioSource.volume -= 5.0f * Time.deltaTime;
+        }
     }
 }

@@ -172,7 +172,7 @@ public class MovePlayer : MonoBehaviour
             
             if (rb.velocity.y >= 0)
             {
-                rb.AddForce(Physics.gravity * 0.2f * rb.mass);
+                rb.AddForce(Physics.gravity * 0.3f * rb.mass);
             }
             else if (rb.velocity.y < 0)
             {
@@ -189,7 +189,7 @@ public class MovePlayer : MonoBehaviour
             
             if (Physics.Raycast(this.transform.position, Vector3.down, out hit, 1.0f, layerMask) || (Physics.Raycast(this.transform.position + (Vector3.up * 0.2f), Vector3.down, out hit, 1.0f, layerMask2)))
             {
-                if (hit.distance < 0.3f)
+                if (hit.distance < 0.5f)
                 {
                     grounded = true;
                 }
@@ -243,6 +243,7 @@ public class MovePlayer : MonoBehaviour
                     rb.velocity = new Vector3(speed, rb.velocity.y, 0.0f);
                     playerAnimation.SetBool("isComplete", false);
                     playerAnimation.SetBool("isClear", false);
+                    playerAnimation.SetBool("isClear2", false);
                     playerAnimation.SetBool("isMove", true);
                 }
             }
@@ -470,6 +471,7 @@ public class MovePlayer : MonoBehaviour
     
     public void StartJump()
     {
+        rb.velocity = new Vector3(rb.velocity.x, 0.0f, 0.0f);
         rb.AddForce(0.0f, jumpPower, 0.0f, ForceMode.Impulse);
         audioManager.PlayJumpSE();
     }
@@ -492,7 +494,7 @@ public class MovePlayer : MonoBehaviour
     
     public void StopPull()
     {
-        if (isPulling && !fastPull && !inFreeze)
+        if (isPulling && !inFreeze)
         {
             StopCoroutine("HoldPull");
             tapeHold.StopPulling();
@@ -595,7 +597,7 @@ public class MovePlayer : MonoBehaviour
     {
         if (other.gameObject.tag == "Ground" || other.gameObject.tag == "TapeBlock")
         {
-            onGround = true;
+            SetJump();
         }
     }
     
@@ -701,6 +703,8 @@ public class MovePlayer : MonoBehaviour
         
         Instantiate(effectManager.GetGoalStoneEffect(), new Vector3(this.transform.position.x, this.transform.position.y + 1.5f, this.transform.position.z + 0.5f), Quaternion.identity);
         ClearInfoScript.instance.SaveStageState(collectedStone, true);
+        
+        audioManager.SetGameOver();
     }
     
     public void CheckAnimState()

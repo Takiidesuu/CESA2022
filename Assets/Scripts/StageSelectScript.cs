@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class StageSelectScript : MonoBehaviour
 {
-
-
     public bool dFlag;
     [SerializeField] Vector3[] w1sPosition;
     [SerializeField] Vector3[] w2sPosition;
@@ -59,9 +57,10 @@ public class StageSelectScript : MonoBehaviour
     [SerializeField] private bool audioDebug;
     AudioManager audioScript;
 
-
     private Tweener _shakeTweener;
     private Vector3 _initPosition;
+    
+    List<StageList> stageList = new List<StageList>();
 
     void Start()
     {
@@ -95,9 +94,96 @@ public class StageSelectScript : MonoBehaviour
         
         cursorPosition2 = startCursorImage.GetComponent<RectTransform>();
 
-
-        // ‰ŠúˆÊ’u‚ğ•Û
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½ï¿½Ûï¿½
         _initPosition = transform.position;
+        
+        for (int a = 1; a < 6 ; a++)
+        {
+            for (int b = 1; b < 6; b++)
+            {
+                var numberStone = 0;
+                switch (a)
+                {
+                    case 1:
+                        switch (b)
+                        {
+                            case 1: numberStone = 3;
+                                break;
+                            case 2: numberStone = 3;
+                                break;
+                            case 3: numberStone = 3;
+                                break;
+                            case 4: numberStone = 4;
+                                break;
+                            case 5: numberStone = 4;
+                                break;
+                        }
+                        break;
+                    case 2:
+                        switch (b)
+                        {
+                            case 1: numberStone = 4;
+                                break;
+                            case 2: numberStone = 3;
+                                break;
+                            case 3: numberStone = 3;
+                                break;
+                            case 4: numberStone = 4;
+                                break;
+                            case 5: numberStone = 4;
+                                break;
+                        }
+                        break;
+                    case 3:
+                        switch (b)
+                        {
+                            case 1: numberStone = 4;
+                                break;
+                            case 2: numberStone = 4;
+                                break;
+                            case 3: numberStone = 3;
+                                break;
+                            case 4: numberStone = 3;
+                                break;
+                            case 5: numberStone = 5;
+                                break;
+                        }
+                        break;
+                    case 4:
+                        switch (b)
+                        {
+                            case 1: numberStone = 3;
+                                break;
+                            case 2: numberStone = 3;
+                                break;
+                            case 3: numberStone = 3;
+                                break;
+                            case 4: numberStone = 3;
+                                break;
+                            case 5: numberStone = 3;
+                                break;
+                        }
+                        break;
+                    case 5:
+                        switch (b)
+                        {
+                            case 1: numberStone = 3;
+                                break;
+                            case 2: numberStone = 3;
+                                break;
+                            case 3: numberStone = 3;
+                                break;
+                            case 4: numberStone = 3;
+                                break;
+                            case 5: numberStone = 3;
+                                break;
+                        }
+                        break;
+                }
+                
+                stageList.Add(new StageList{Name = "Stage" + a + "-" + "b", WorldNum = a, StageNum = b, StoneNum = numberStone});
+            }
+        }
     }
 
     // Update is called once per frame
@@ -105,11 +191,11 @@ public class StageSelectScript : MonoBehaviour
     {
         switch (stageSelectState)
         {
-            case 1: // ƒ[ƒ‹ƒhƒZƒŒƒNƒg
+            case 1: // ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½Zï¿½ï¿½ï¿½Nï¿½g
                 WorldSelect();
                 break;
 
-            case 2: // ƒXƒe[ƒWƒZƒŒƒNƒg
+            case 2: // ï¿½Xï¿½eï¿½[ï¿½Wï¿½Zï¿½ï¿½ï¿½Nï¿½g
 
                 StageSelect();
                 break;
@@ -324,7 +410,7 @@ public class StageSelectScript : MonoBehaviour
         }
     }
 
-    // ƒJ[ƒ\ƒ‹ˆÚ“®
+    // ï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½Ú“ï¿½
     void CursorPos(RectTransform cursorpos,  int worldNo , int stageNo)
     {
         switch (worldNo )
@@ -501,7 +587,7 @@ public class StageSelectScript : MonoBehaviour
         FadeManager.Instance.LoadScene("Stage1-1", 1.0f);
         isStart = false;
         
-        // StageLoad•ÏX—\’è
+        // StageLoadï¿½ÏXï¿½\ï¿½ï¿½
         ClearInfoScript.instance.SetWorldStageNum(WorldNo, StageNo);
     }
 

@@ -16,7 +16,87 @@ public class StageListScript : MonoBehaviour
         {
             for (int b = 1; b < 6; b++)
             {
-                stageList.Add(new StageList{Name = "Stage" + a + "-" + "b", WorldNum = a, StageNum = b, StoneNum = 0});
+                var numberStone = 0;
+                switch (a)
+                {
+                    case 1:
+                        switch (b)
+                        {
+                            case 1: numberStone = 3;
+                                break;
+                            case 2: numberStone = 3;
+                                break;
+                            case 3: numberStone = 3;
+                                break;
+                            case 4: numberStone = 4;
+                                break;
+                            case 5: numberStone = 4;
+                                break;
+                        }
+                        break;
+                    case 2:
+                        switch (b)
+                        {
+                            case 1: numberStone = 4;
+                                break;
+                            case 2: numberStone = 3;
+                                break;
+                            case 3: numberStone = 3;
+                                break;
+                            case 4: numberStone = 4;
+                                break;
+                            case 5: numberStone = 4;
+                                break;
+                        }
+                        break;
+                    case 3:
+                        switch (b)
+                        {
+                            case 1: numberStone = 4;
+                                break;
+                            case 2: numberStone = 4;
+                                break;
+                            case 3: numberStone = 3;
+                                break;
+                            case 4: numberStone = 3;
+                                break;
+                            case 5: numberStone = 5;
+                                break;
+                        }
+                        break;
+                    case 4:
+                        switch (b)
+                        {
+                            case 1: numberStone = 3;
+                                break;
+                            case 2: numberStone = 3;
+                                break;
+                            case 3: numberStone = 3;
+                                break;
+                            case 4: numberStone = 3;
+                                break;
+                            case 5: numberStone = 3;
+                                break;
+                        }
+                        break;
+                    case 5:
+                        switch (b)
+                        {
+                            case 1: numberStone = 3;
+                                break;
+                            case 2: numberStone = 3;
+                                break;
+                            case 3: numberStone = 3;
+                                break;
+                            case 4: numberStone = 3;
+                                break;
+                            case 5: numberStone = 3;
+                                break;
+                        }
+                        break;
+                }
+                
+                stageList.Add(new StageList{Name = "Stage" + a + "-" + "b", WorldNum = a, StageNum = b, StoneNum = numberStone});
             }
         }
     }
@@ -24,11 +104,11 @@ public class StageListScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        stageListing.list = stageList;
+        /* stageListing.list = stageList;
         XmlSerializer serializer = new XmlSerializer(typeof(StageList));
         FileStream stream = new FileStream(Application.dataPath + "/StreamingAssets/StageList.xml", FileMode.Create);
         serializer.Serialize(stream, stageListing);
-        stream.Close();
+        stream.Close(); */
     }
 
     // Update is called once per frame

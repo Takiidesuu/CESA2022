@@ -172,35 +172,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fe1c76f6908ded4892cde5c0ea6b920, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgmClip: {fileID: 8300000, guid: 0e7c5021024750a40b65f06d4e87a520, type: 3}
-  bgmVolume: 0.055
-  cursorSE: {fileID: 8300000, guid: d2fabf4cd51ef4542915f8672071547c, type: 3}
+  bgmClip: {fileID: 8300000, guid: 1829adf6f0ff1b743a0e7b6a428d55de, type: 3}
+  bgmVolume: 1
+  cursorSE: {fileID: 8300000, guid: 20da55196774da14d9caa173dafe79f2, type: 3}
   cursorVolume: 1
-  titleDecideSE: {fileID: 0}
+  titleDecideSE: {fileID: 8300000, guid: 380fb60e71281844d953c4222e0cdc44, type: 3}
   titleDecideVolume: 1
   decideSE: {fileID: 8300000, guid: 036dc530f92fe8745ad00af08c605347, type: 3}
   decideVolume: 1
-  cancelSE: {fileID: 8300000, guid: 036dc530f92fe8745ad00af08c605347, type: 3}
+  cancelSE: {fileID: 8300000, guid: 7346b3c2bd0c8e8439b40f60bb89b63a, type: 3}
   cancelVolume: 1
-  rotateSE: {fileID: 0}
+  rotateSE: {fileID: 8300000, guid: f2b976eaf967a204398deb8d415e93f9, type: 3}
   rotateVolume: 1
-  doorSE: {fileID: 0}
+  doorSE: {fileID: 8300000, guid: b005c5110dfa9d246848e0f818e15d7f, type: 3}
   doorVolume: 1
-  moveSE: {fileID: 8300000, guid: 6410cd0bf8445304c869d33bf504b033, type: 3}
+  moveSE: {fileID: 8300000, guid: c62e1c0f60a53f74a81001833187aef2, type: 3}
   moveVolume: 1
-  jumpSE: {fileID: 8300000, guid: d19212b36efb0db4d87ed8e4446a440b, type: 3}
+  jumpSE: {fileID: 8300000, guid: f166dcccbf37ec243809ba8513318dbe, type: 3}
   jumpVolume: 0.448
-  tearSE: {fileID: 0}
+  tearSE: {fileID: 8300000, guid: b353bca6fe380a64a8fe5b4c77a8f86b, type: 3}
   tearVolume: 1
-  blockSE: {fileID: 8300000, guid: ce371fda610f9e946856f42336332b07, type: 3}
+  blockSE: {fileID: 8300000, guid: 7e25b710948e7c44abbd41dd84d326ad, type: 3}
   blockVolume: 0.241
-  slateSE: {fileID: 8300000, guid: 34a3f88dc750fb74798fd31f4f6d52f1, type: 3}
+  slateSE: {fileID: 8300000, guid: 5e77bac322f312c48956955f966f1e77, type: 3}
   slateVolume: 1
-  pauseSE: {fileID: 8300000, guid: 7c11db8e36223c74c91358fdea273170, type: 3}
+  pauseSE: {fileID: 8300000, guid: e86bb7905f5a4af4fbce28c4c343bccb, type: 3}
   pauseVolume: 1
   enemyHitSE: {fileID: 8300000, guid: 4d45ffb5cf17f1841800163f581cf60b, type: 3}
   enemyHitVolume: 1
-  swordSE: {fileID: 8300000, guid: b93c04968e0641242b7914922f7b4324, type: 3}
+  swordSE: {fileID: 8300000, guid: 286224dafb78faf44ab65e7d8271ac1f, type: 3}
   swordVolume: 1
   rockSE: {fileID: 0}
   rockVolume: 1
@@ -218,6 +218,10 @@ MonoBehaviour:
   rockCrashVolume: 1
   windSE: {fileID: 0}
   windVolume: 1
+  rezultSE: {fileID: 8300000, guid: 0efe5c090fc614c42b549bd291652434, type: 3}
+  rezuktVolume: 1
+  gameoverSE: {fileID: 8300000, guid: f3372cb469d7a2846899945616b5892d, type: 3}
+  gameoverVolume: 1
 --- !u!1 &4526045017577528524
 GameObject:
   m_ObjectHideFlags: 0

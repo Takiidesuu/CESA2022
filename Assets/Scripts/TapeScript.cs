@@ -461,7 +461,6 @@ public class TapeScript : MonoBehaviour
                             var botTapeCenter = botCoordinate + (botTapeSize / 2.0f);
                             botTapeSize = botTapeSize / colTapeLength * collidingTapes[a].transform.localScale.magnitude;
                             
-                            
                             GameObject objTemp = collidingTapes[a];
                             objTemp.transform.localScale = new Vector3(collidingTapes[a].transform.localScale.x, collidingTapes[a].transform.localScale.y, topTapeSize);
                             
@@ -484,7 +483,6 @@ public class TapeScript : MonoBehaviour
                             
                             Destroy(collidingTapes[a]);
                         }
-                        
                     }
                     else
                     {
@@ -520,7 +518,7 @@ public class TapeScript : MonoBehaviour
             knightScript.KnightRotate();
         }
 
-        Destroy(this.gameObject);
+        Destroy(this.transform.parent.gameObject);
     }
     
     private void ResetForm()
@@ -567,7 +565,10 @@ public class TapeScript : MonoBehaviour
     {
         if (other.gameObject.tag == "Tape")
         {
-            collidingTapes.Add(other.gameObject);
+            if (!collidingTapes.Contains(other.gameObject))
+            {
+                collidingTapes.Add(other.gameObject);
+            }
         }
         
         if (other.gameObject.tag == "TapeBlock")
