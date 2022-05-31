@@ -518,7 +518,7 @@ public class TapeScript : MonoBehaviour
             knightScript.KnightRotate();
         }
 
-        Destroy(this.transform.parent.gameObject);
+        Destroy(this.transform.gameObject);
     }
     
     private void ResetForm()
@@ -573,7 +573,7 @@ public class TapeScript : MonoBehaviour
         
         if (other.gameObject.tag == "TapeBlock")
         {
-            if (other.gameObject.transform.position.z > this.gameObject.transform.position.z)
+            if (other.gameObject.transform.position.z > this.gameObject.transform.position.z && other.gameObject.transform.IsChildOf(this.transform.parent))
             {
                 blockScript = other.gameObject.GetComponent<TapeBlock>();
 

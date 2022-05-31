@@ -21,6 +21,11 @@ public class XMLManager : MonoBehaviour
             
             createSaveFile = true;
         }
+        
+        if (!File.Exists(Application.persistentDataPath + "/SaveData/savedata.xml"))
+        {
+            createSaveFile = true;
+        }
     }
     
     private void Start() 

@@ -43,7 +43,6 @@ public class StoneScript : MonoBehaviour
     
     private bool collected = false;
     private bool finalReturn = false;
-    private bool playClearSE = true;
     
     private GameObject effectManager;
     private GameObject shineObj;
@@ -151,12 +150,6 @@ public class StoneScript : MonoBehaviour
                 if (this.transform.localPosition == targetPos)
                 {
                     animDoneFlg = true;
-                    
-                    if (playClearSE)
-                    {
-                        GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>().PlayResultSE();
-                        playClearSE = false;
-                    }
                 }
             }
             else

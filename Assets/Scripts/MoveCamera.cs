@@ -22,6 +22,7 @@ public class MoveCamera : MonoBehaviour
     
     private InputManager inputScript;
     private float offsetPos = 0.0f;
+    private float ShakePos = 0.0f;
     private float defaultPos;
     
     //カメラの稼働力（上に動かす時）
@@ -32,11 +33,27 @@ public class MoveCamera : MonoBehaviour
     private bool PlayerIdle = false;
     private bool Locked = false;
 
+    //ここから書き足し処理
+   // private Vector3 nowShakePos;
+   // private float shakeDuration = 5.0f;
+   // private float shakeAmount = 0.7f;
+
+   // private bool canshake = false;
+   // private float _shakeTimer;
+  　////ここまで
+  
+    private bool inPos = false;
+
     [HideInInspector] public Camera m_Camera;
     
     public void SetGoal()
     {
         goal = true;
+    }
+    
+    public bool InPosition()
+    {
+        return inPos;
     }
 
     public void ZoomFov(Camera camera, float zoom, float duration)
@@ -50,9 +67,9 @@ public class MoveCamera : MonoBehaviour
     {
         //プレイヤーオブジェクトを変数に入れる
         playerObj = GameObject.FindGameObjectWithTag("Player");
-        m_Camera = GetComponent<Camera>();
-        
         inputScript = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManager>();
+        m_Camera = GetComponent<Camera>();
+        //nowShakePos = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
     }
 
     // Update is called once per frame
@@ -61,7 +78,7 @@ public class MoveCamera : MonoBehaviour
         if (!goal)
         {
             //カメラの位置をプレイヤーの位置によって、変える
-            this.transform.position = new Vector3(playerObj.transform.position.x + 2.0f, playerObj.transform.position.y + height, playerObj.transform.position.z - distance);
+            this.transform.position = new Vector3(playerObj.transform.position.x + 2.0f , playerObj.transform.position.y + height + offsetPos, playerObj.transform.position.z - distance);
             
             //下に向かせる
             this.transform.localRotation = Quaternion.Euler(rotation, 0.0f, 0.0f);
@@ -73,6 +90,11 @@ public class MoveCamera : MonoBehaviour
             this.transform.position = Vector3.MoveTowards(this.transform.position, goalPos, 4.0f * Time.deltaTime);
             
             this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, Quaternion.identity, 18.0f * Time.deltaTime);
+            
+            if (this.transform.position == goalPos)
+            {
+                inPos = true;
+            }
         }
     }
     
@@ -95,6 +117,59 @@ public class MoveCamera : MonoBehaviour
         PlayerIdle = false;
         offsetPos = 0.0f * Time.deltaTime;
     }
+
+    public void Shake(float duration, float magnitude)
+    {
+        StartCoroutine(DoShake(duration, magnitude));
+    }
+
+    private IEnumerator DoShake(float duration, float magnitude)
+    {
+        
+        var pos = playerObj.transform.position;
+
+        pos.y = 0.0f; 
+
+        var elapsed = 0.0f;
+
+        while(elapsed < duration)
+        {
+            //完成版
+            //ShakePos = pos.x + Random.Range(-1.0f, 1.0f) * magnitude;
+            //offsetPos = pos.y + Random.Range(-1.0f, 1.0f) * magnitude;
+            ShakePos = pos.x + Random.Range(-1.0f, 1.0f) * magnitude;
+            offsetPos = pos.y + Random.Range(-1.0f, 1.0f) * magnitude;
+           // ShakePosZ = pos.z + Random.Range(-1.0f, 1.0f) * magnitude;
+
+            this.transform.position = new Vector3(playerObj.transform.position.x + 2.0f , playerObj.transform.position.y, playerObj.transform.position.z);
+            elapsed += Time.deltaTime;
+
+            yield return null;
+        }
+        //transform.localPosition = pos;
+       this.transform.position = pos;
+        ShakePos = 0.0f;
+        offsetPos = 0.0f;
+    }
+
+
+    //public void ShakeCamera()
+    //{
+    //    canshake = true;
+    //    _shakeTimer = shakeDuration;
+    //    if(_shakeTimer > 0)
+    //    {
+    //        Debug.Log("揺れてる");
+    //        this.transform.position = new Vector3(playerObj.transform.position.x + 2.0f, playerObj.transform.position.y + height + offsetPos, playerObj.transform.position.z - distance) + Random.insideUnitSphere * shakeAmount;
+    //        _shakeTimer -= Time.deltaTime;
+    //    }
+    //    //else
+    //    //{
+    //    //    _shakeTimer = 0.0f;
+    //    //    this.transform.position = nowShakePos;
+    //    //    canshake = false;
+    //    //}
+    //}
     
     void Input()
     {
@@ -102,6 +177,7 @@ public class MoveCamera : MonoBehaviour
         
         if (PlayerInput >= 0.5f)
         {
+            Debug.Log("1haitta");
             offsetPos += 5.0f * Time.deltaTime;
             
             if (offsetPos > moveMax)

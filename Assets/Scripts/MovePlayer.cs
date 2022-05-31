@@ -45,6 +45,7 @@ public class MovePlayer : MonoBehaviour
     private bool fastPull = false;
     private bool inRange = false;
     private bool inFreeze = false;
+    private bool inPullingProcess = false;
     
     private int collectedStone = 0;
     private int stoneNumInMap;
@@ -217,7 +218,7 @@ public class MovePlayer : MonoBehaviour
                 {
                     transform.eulerAngles = to;
                     
-                    if (canRotate)
+                    if (canRotate && cameraScript.InPosition())
                     {
                         StartCoroutine("GoalAnimation");
                         canRotate = false;
@@ -227,6 +228,8 @@ public class MovePlayer : MonoBehaviour
                 playerAnimation.SetBool("isMove", false);
                 playerAnimation.SetBool("isJump", false);
                 playerAnimation.SetBool("isGrab", false);
+                
+                audioSource.Stop();
             }
             else
             {
@@ -328,6 +331,8 @@ public class MovePlayer : MonoBehaviour
                     }
                 }
             }
+            
+            inPullingProcess = false;
         }
         else
         {
@@ -406,6 +411,8 @@ public class MovePlayer : MonoBehaviour
                             break;
                         }
                     }
+                    
+                    inPullingProcess = true;
                 }
                 else
                 {
@@ -494,7 +501,7 @@ public class MovePlayer : MonoBehaviour
     
     public void StopPull()
     {
-        if (isPulling && !inFreeze)
+        if (isPulling && !inFreeze && !inPullingProcess)
         {
             StopCoroutine("HoldPull");
             tapeHold.StopPulling();
@@ -679,18 +686,22 @@ public class MovePlayer : MonoBehaviour
     
     IEnumerator GoalAnimation()
     {
+        audioSource.Stop();
+        
         for (int a = 0; a < collectedStone; a++)
         {
             stoneObj[a].GetComponent<StoneScript>().StartResultAnim((float)a + 0.5f);  //計算式考えて
         }
         
         inputManager.SetGoalStatus();
+        audioManager.PlayResultSE();
         
         yield return new WaitForSeconds(3.0f);
         
         if (collectedStone == stoneNumInMap)
         {
             playerAnimation.SetBool("isComplete", true);
+            Instantiate(effectManager.GetGoalStoneEffect(), new Vector3(this.transform.position.x, this.transform.position.y + 1.5f, this.transform.position.z + 0.5f), Quaternion.identity);
         }
         else if (collectedStone > 0)
         {
@@ -701,7 +712,6 @@ public class MovePlayer : MonoBehaviour
             playerAnimation.SetBool("isClear", true);
         }
         
-        Instantiate(effectManager.GetGoalStoneEffect(), new Vector3(this.transform.position.x, this.transform.position.y + 1.5f, this.transform.position.z + 0.5f), Quaternion.identity);
         ClearInfoScript.instance.SaveStageState(collectedStone, true);
         
         ClearInfoScript.instance.NextStageNum();

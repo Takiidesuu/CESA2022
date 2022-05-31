@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class StageSelectScript : MonoBehaviour
 {
@@ -17,10 +18,6 @@ public class StageSelectScript : MonoBehaviour
     {
         In,Out
     }
-    private enum FadeState
-    {
-        In, Out
-    }
 
     [SerializeField] float fadespeed;
 
@@ -31,18 +28,21 @@ public class StageSelectScript : MonoBehaviour
     private int wNum;
     private int sNum;
 
-    private bool isRotating = false;
+    private bool isMove = false;
     private bool isZoom = false;
     private bool isStart = false;
-    private bool isFade = false;
+    private bool isScale = false;
 
-    [SerializeField] GameObject stageSelectCursor;
+    GameObject stageSelectCursor;
     private RectTransform cursorPosition;
-    [SerializeField] Image selectCursorImage;
+    Image selectCursorImage;
 
-    [SerializeField] CanvasGroup stageStartObject;
+    CanvasGroup stageStartObject;
     private RectTransform cursorPosition2;
-    [SerializeField] Image startCursorImage;
+    Image startCursorImage;
+
+    CanvasGroup exit;
+    Image exitCursor;
 
 
     [SerializeField] float cursolSpeed = 0.75f;
@@ -57,10 +57,33 @@ public class StageSelectScript : MonoBehaviour
     [SerializeField] private bool audioDebug;
     AudioManager audioScript;
 
+
     private Tweener _shakeTweener;
     private Vector3 _initPosition;
     
     List<StageList> stageList = new List<StageList>();
+
+    [Header("開けるドアをセット")]
+    [SerializeField] public GameObject cube1;
+    [SerializeField] public GameObject cube2;
+    [SerializeField] public GameObject cube3;
+    [SerializeField] public GameObject cube4;
+    [SerializeField] public GameObject cube5;
+
+    [Header("ドアをどこまで開けるか")]
+    [SerializeField] float openHeight;
+
+    [Header("ドアを開けるまでにかかる時間")]
+    [SerializeField] float openSpeed;
+
+    UI_Stone uistoneScript;
+    StageName stageNameScript;
+
+    public int GetStoneNum(int w, int s)
+    {
+        int index = ((w - 1) * 5) + (s - 1);
+        return stageList[index].StoneNum;
+    }
 
     void Start()
     {
@@ -68,7 +91,7 @@ public class StageSelectScript : MonoBehaviour
         zoomCameraScript = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ZoomCamera>();
         movedoor = GameObject.FindWithTag("movedoor");
 
-        isRotating = false;
+        isMove = false;
         isZoom = false;
         isStart = false;
 
@@ -79,20 +102,23 @@ public class StageSelectScript : MonoBehaviour
         wNum = 1;
         sNum = 1;
 
+        stageSelectCursor = GameObject.FindGameObjectWithTag("Cursor");
+        selectCursorImage = stageSelectCursor.transform.GetChild(0).GetComponent<Image>();
         stageSelectCursor.SetActive(false);
         cursorPosition = selectCursorImage.GetComponent<RectTransform>();
 
-        if (dFlag)
-        {
-            stageStartObject.alpha = 1;
-            stageStartObject.gameObject.transform.localScale = new Vector3(0, 0, 0);
-        }
-        else
-        {
-            stageStartObject.alpha = 0;
-        }
-        
+        stageStartObject = GameObject.FindGameObjectWithTag("Canvas").GetComponent<CanvasGroup>();
+        startCursorImage = stageStartObject.transform.GetChild(8).GetComponent<Image>();
+        stageStartObject.alpha = 1;
+        stageStartObject.gameObject.transform.localScale = new Vector3(0, 0, 0);
         cursorPosition2 = startCursorImage.GetComponent<RectTransform>();
+
+        exit = GameObject.FindGameObjectWithTag("Entrance").GetComponent < CanvasGroup > ();
+        exitCursor = exit.transform.GetChild(4).GetComponent<Image>();
+        exit.transform.localScale = new Vector3(0, 0, 0);
+
+        uistoneScript = stageStartObject.GetComponent<UI_Stone>();
+        stageNameScript = GameObject.FindGameObjectWithTag("Text").GetComponent<StageName>();
 
         // �����ʒu��ێ�
         _initPosition = transform.position;
@@ -152,15 +178,15 @@ public class StageSelectScript : MonoBehaviour
                     case 4:
                         switch (b)
                         {
-                            case 1: numberStone = 3;
+                            case 1: numberStone = 5;
                                 break;
-                            case 2: numberStone = 3;
+                            case 2: numberStone = 5;
                                 break;
-                            case 3: numberStone = 3;
+                            case 3: numberStone = 5;
                                 break;
-                            case 4: numberStone = 3;
+                            case 4: numberStone = 4;
                                 break;
-                            case 5: numberStone = 3;
+                            case 5: numberStone = 5;
                                 break;
                         }
                         break;
@@ -196,17 +222,27 @@ public class StageSelectScript : MonoBehaviour
                 break;
 
             case 2: // �X�e�[�W�Z���N�g
-
-                StageSelect();
+                if (wNum != 5)
+                {
+                    StageSelect();
+                }
+                else
+                {
+                    SelectExit();
+                }
                 break;
 
             case 3:
-                StageStart();
 
+                    StageStart();
                 break;
 
             case 4:
-                if (isStart)
+                if (isMove)
+                {
+                    UpDoor(wNum);
+                }
+                else if(isStart && !isMove)
                 {
                     LoadStage(wNum, sNum);
                 }
@@ -219,14 +255,14 @@ public class StageSelectScript : MonoBehaviour
         Vector2 DoorVec = inputScript.GetMenuSelectFloat();
         bool SelectOK = inputScript.GetMenuOKState();
 
-        if (!isRotating && !isZoom)
+        if (!isMove && !isZoom)
         {
             if (DoorVec.x == -1.0f && !KeyDownFlag)
             {
-                MovedoorState = (MovedoorState + 5 - 1) % 5;
+                MovedoorState = (MovedoorState - 1 + 5) % 5;
                 
                 KeyDownFlag = true;
-                isRotating = true;
+                isMove = true;
 
                 if (audioDebug)
                 {
@@ -237,7 +273,7 @@ public class StageSelectScript : MonoBehaviour
             {
                 MovedoorState = (MovedoorState + 1) % 5;
                 KeyDownFlag = true;
-                isRotating = true;
+                isMove = true;
 
                 if (audioDebug)
                 {
@@ -259,7 +295,7 @@ public class StageSelectScript : MonoBehaviour
                 }
             }
         }
-        if (isRotating)
+        if (isMove)
         {
             Invoke("Movedoor", 0.5f);
         }
@@ -276,21 +312,20 @@ public class StageSelectScript : MonoBehaviour
         var temp = movedoor.transform.eulerAngles.y;
         if (MovedoorState > 0)
         {
-            movedoor.transform.rotation = Quaternion.RotateTowards(movedoor.transform.rotation, Quaternion.Euler(0, Mathf.CeilToInt(movedoor.transform.localRotation.y + MovedoorState * turnRotation), 0.0f), turnspeed);
+            movedoor.transform.rotation = Quaternion.RotateTowards(movedoor.transform.rotation, Quaternion.Euler(0, Mathf.CeilToInt(movedoor.transform.localRotation.y - MovedoorState * turnRotation), 0.0f), turnspeed);
         }
-        else if(MovedoorState == 0)
+        else if (MovedoorState == 0)
         {
-            movedoor.transform.rotation = Quaternion.RotateTowards(movedoor.transform.rotation, Quaternion.Euler(0, 0.0f, 0.0f), turnspeed );
+            movedoor.transform.rotation = Quaternion.RotateTowards(movedoor.transform.rotation, Quaternion.Euler(0, 0.0f, 0.0f), turnspeed);
         }
-
 
         if (movedoor.transform.eulerAngles.y != temp)
         {
-            isRotating = true;
+            isMove = true;
         }
         else
         {
-            isRotating = false;
+            isMove = false;
         }
     }
 
@@ -307,7 +342,14 @@ public class StageSelectScript : MonoBehaviour
             wNum = System.Math.Abs(MovedoorState) + 1;
             sNum = 1;
             SetFirstStage(cursorPosition, wNum, sNum);
-            stageSelectCursor.SetActive(true);
+            if (wNum != 5)
+            {
+                stageSelectCursor.SetActive(true);
+            }
+            else
+            {
+                isScale = true;
+            }
             isZoom = false;
             KeyDownFlag = false;
         }
@@ -320,13 +362,14 @@ public class StageSelectScript : MonoBehaviour
         bool SelectCancel = inputScript.GetMenuCancelState();
         var temp = cursorPosition.localPosition;
 
-        if (!isFade)
+        if (!isScale)
         {
             if (SelectOK && !KeyDownFlag)
             {
-                isFade = true;
+                isScale = true;
                 stageSelectCursor.SetActive(false);
-                
+                uistoneScript.Init(wNum , sNum);
+                stageNameScript.SetStageName(wNum, sNum);
             }
             else if (SelectCancel && !KeyDownFlag)
             {
@@ -334,7 +377,7 @@ public class StageSelectScript : MonoBehaviour
                 stageSelectCursor.SetActive(false);
                 zoomCameraScript.ZoomFov(zoomCameraScript.m_Camera, 20.0f, 2.0f);
                 zoomCameraScript.m_Camera.transform.DOMove(new Vector3(0.0f, 0.005f, 1.626f), 1.0f);
-                KeyDownFlag = true;
+                KeyDownFlag = true;                
             }
 
             if ((DoorVec.x == 1.0f) && !KeyDownFlag)
@@ -356,30 +399,15 @@ public class StageSelectScript : MonoBehaviour
         }
         CursorPos(cursorPosition, wNum, sNum);
 
-        if (dFlag)
+        if (isScale)
         {
-            ScaleUI(stageStartObject.gameObject, fadespeed, isFade, ScaleState.In);
+            ScaleUI(stageStartObject.gameObject, fadespeed, isScale, ScaleState.In);
         }
-        else
+        
+        if (stageStartObject.gameObject.transform.localScale.x >= 1)
         {
-            FadeUI(stageStartObject, fadespeed, isFade, FadeState.Out);
-        }
-
-        if (dFlag)
-        {
-            if (stageStartObject.gameObject.transform.localScale.x >= 1)
-            {
-                stageSelectState = 3;
-                isFade = false;
-            }
-        }
-        else
-        {
-            if (stageStartObject.alpha >= 1)
-            {
-                stageSelectState = 3;
-                isFade = false;
-            }
+            stageSelectState = 3;
+            isScale = false;
         }
 
         if (temp == cursorPosition.localPosition && DoorVec.x == 0.0f)
@@ -405,7 +433,7 @@ public class StageSelectScript : MonoBehaviour
                 cursorpos.localPosition = w4sPosition[stageNo - 1];
                 break;
             case 5:
-                cursorpos.localPosition = w5sPosition[stageNo - 1];
+                cursorpos.localPosition = new Vector3(-423.0f, -183.0f);
                 break;
         }
     }
@@ -447,76 +475,10 @@ public class StageSelectScript : MonoBehaviour
             case 4:
                 cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, w4sPosition[stageNo - 1], cursolSpeed);
                 break;
-            //case 5:
-            //    cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, w5sPosition[stageNo - 1], cursolSpeed);
-            //    break;
+            case 5:
+                cursorpos.localPosition = new Vector3( w5sPosition[stageNo - 1].x , w5sPosition[stageNo - 1].y, w5sPosition[stageNo - 1].z); ;
+                break;
         }
-        //else if (worldNo == 2)
-        //{
-
-        //    switch (stageNo)
-        //    {
-        //        case 1:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(-241.0f, 255.0f, 0.0f), cursolSpeed);
-        //            break;
-        //        case 2:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(-19.0f, -19.0f, 0.0f), cursolSpeed);
-        //            break;
-        //        case 3:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(187.0f, 298.0f, 0.0f), cursolSpeed);
-        //            break;
-        //        case 4:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(207.0f, -471.0f, 0.0f), cursolSpeed);
-        //            break;
-        //        case 5:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(-282.0f, -463.0f, 0.0f), cursolSpeed);
-        //            break;
-        //    }
-        //}
-        //else if (worldNo == 3)
-        //{
-
-        //    switch (stageNo)
-        //    {
-        //        case 1:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(-141.0f, 207.0f, 0.0f), cursolSpeed);
-        //            break;
-        //        case 2:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(-282.0f, -264.0f, 0.0f), cursolSpeed);
-        //            break;
-        //        case 3:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(-39.0f, -287.0f, 0.0f), cursolSpeed);
-        //            break;
-        //        case 4:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(243.0f, -291.0f, 0.0f), cursolSpeed);
-        //            break;
-        //        case 5:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(215.0f, 254.0f, 0.0f), cursolSpeed);
-        //            break;
-        //    }
-        //}
-        //else if (worldNo == 4)
-        //{
-
-        //    switch (stageNo)
-        //    {
-        //        case 1:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(187.0f, 256.0f, 0.0f), cursolSpeed);
-        //            break;
-        //        case 2:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(180.0f, -118.0f, 0.0f), cursolSpeed);
-        //            break;
-        //        case 3:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(-14.0f, -505.0f, 0.0f), cursolSpeed);
-        //            break;
-        //        case 4:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(-222.0f, -136.0f, 0.0f), cursolSpeed);
-        //            break;
-        //        case 5:
-        //            cursorpos.localPosition = Vector3.MoveTowards(cursorpos.localPosition, new Vector3(-211.0f, 258.0f, 0.0f), cursolSpeed);
-        //            break;
-        //    }
-        //}
     }
 
     void StageStart()
@@ -524,7 +486,7 @@ public class StageSelectScript : MonoBehaviour
         Vector2 DoorVec = inputScript.GetMenuSelectFloat();
         bool SelectOK = inputScript.GetMenuOKState();
         bool SelectCancel = inputScript.GetMenuCancelState();
-        if (!isFade)
+        if (!isScale)
         {
             if (DoorVec.y == 1.0f)
             {
@@ -537,7 +499,7 @@ public class StageSelectScript : MonoBehaviour
 
             if (SelectCancel)
             {
-                isFade = true;
+                isScale = true;
                 stageSelectCursor.SetActive(true);
             }
 
@@ -545,75 +507,47 @@ public class StageSelectScript : MonoBehaviour
             {
                 stageSelectState = 4;
                 stageStartObject.gameObject.SetActive(false);
-                isStart = true;
+                isMove = true;
             }
             else if (SelectOK && cursorPosition2.localPosition.y == -293.0f)
             {
 
-                isFade = true;
+                isScale = true;
                 stageSelectCursor.SetActive(true);
             }
         }
 
-        if (dFlag)
-        {
-            ScaleUI(stageStartObject.gameObject, fadespeed, isFade, ScaleState.Out);
-        }
-        else
-        {
-            FadeUI(stageStartObject, fadespeed, isFade, FadeState.In);
-        }
+        ScaleUI(stageStartObject.gameObject, fadespeed, isScale, ScaleState.Out);
 
-        if (dFlag)
+
+        if (stageStartObject.gameObject.transform.localScale.x == 0)
         {
-            if (stageStartObject.gameObject.transform.localScale.x == 0)
-            {
-                stageSelectState = 2;
-                isFade = false;
-            }
+            stageSelectState = 2;
+            uistoneScript.StoneSetFalse(wNum, sNum);
+            isScale = false;
         }
-        else
-        {
-            if (stageStartObject.alpha <= 0)
-            {
-                stageSelectState = 2;
-                isFade = false;
-            }
-        }    
     }
 
     void LoadStage(int WorldNo , int StageNo)
     {
-        FadeManager.Instance.LoadScene("Stage1-1", 1.0f);
         isStart = false;
+        
+        zoomCameraScript.ZoomFov(zoomCameraScript.m_Camera, 0.8f, 5.0f);
         
         // StageLoad�ύX�\��
         ClearInfoScript.instance.SetWorldStageNum(WorldNo, StageNo);
+        
+        StartCoroutine(LoadScene(WorldNo, StageNo));
+        
+        //SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
     }
-
-    void FadeUI(CanvasGroup fadeobject , float fadespeed , bool isfade , FadeState fadeState)
+    
+    IEnumerator LoadScene(int world, int stage)
     {
-        if (isFade)
-        {
-            if (fadeState == FadeState.Out && fadeobject.alpha >= 1)
-            {
-                isfade = false;
-            }
-            else if (fadeState == FadeState.Out && fadeobject.alpha < 1)
-            {
-                isFade = true;
-                fadeobject.alpha += fadespeed * Time.deltaTime;
-            }
-
-            if (fadeState == FadeState.In && fadeobject.alpha <= 0)
-            {
-                isfade = false;
-            }
-            else if (fadeState == FadeState.In && fadeobject.alpha > 0)
-            {
-                fadeobject.alpha -= fadespeed * Time.deltaTime;
-            }
-        }
+        yield return new WaitForSeconds(3.0f);
+        
+        string sceneName = "Stage" + world + "-" + stage;
+        FadeManager.Instance.LoadScene(sceneName, 1.0f);
     }
 
     void ScaleUI(GameObject obj , float speed, bool isScale , ScaleState scaleState)
@@ -626,7 +560,7 @@ public class StageSelectScript : MonoBehaviour
             {
                 obj.transform.localScale =new Vector3(obj.transform.localScale.x +speed * Time.deltaTime, obj.transform.localScale.y + speed * Time.deltaTime,0);
             }
-            else if(size.x > 1.0f && scaleState == ScaleState.In)
+            else if(size.x >= 1.0f && scaleState == ScaleState.In)
             {
                 obj.transform.localScale = new Vector3(1, 1, 0);
                 isScale = false;
@@ -636,7 +570,7 @@ public class StageSelectScript : MonoBehaviour
             {
                 obj.transform.localScale = new Vector3(obj.transform.localScale.x - speed * Time.deltaTime, obj.transform.localScale.y - speed * Time.deltaTime,0);
             }
-            else if (size.x < 0.0f && scaleState == ScaleState.Out)
+            else if (size.x <= 0.0f && scaleState == ScaleState.Out)
             {
                 obj.transform.localScale = new Vector3(0, 0, 0);
                 isScale = false;
@@ -644,10 +578,104 @@ public class StageSelectScript : MonoBehaviour
         }
     }
 
-
     void UpDoor(int WorldNo)
     {
-        
+        switch (WorldNo)
+        {
+            case 1:
+                cube1.transform.position += Vector3.up * Time.deltaTime;
+                if (cube1.transform.position.y >= 3.0f)
+                {
+                    isMove = false;
+                }
+                break;
+            case 2:
+                cube2.transform.position += Vector3.up * Time.deltaTime;
+                if (cube2.transform.position.y >= 3.0f)
+                {
+                    isMove = false;
+                }
+                break;
+            case 3:
+                cube3.transform.position += Vector3.up * Time.deltaTime;
+                if (cube3.transform.position.y >= 3.0f)
+                {
+                    isMove = false;
+                }
+                break;
+            case 4:
+                cube4.transform.position += Vector3.up * Time.deltaTime;
+                if (cube4.transform.position.y >= 3.0f)
+                {
+                    isMove = false;
+                }
+                break;
+        }
+        if (!isMove)
+        {
+            isStart = true;
+        }
+    }
+
+
+    void SelectExit()
+    {
+        if (!isScale)
+        {
+            Vector2 CursoeVec = inputScript.GetMenuSelectFloat();
+            bool SelectOK = inputScript.GetMenuOKState();
+            bool SelectCancel = inputScript.GetMenuCancelState();
+
+            if (CursoeVec.x == -1.0f && !KeyDownFlag)
+            {
+                CursorPos(exitCursor.rectTransform, wNum, 1);
+                KeyDownFlag = true;
+                audioScript.PlayCursorSE();
+            }
+            else if(CursoeVec.x == 1.0f && !KeyDownFlag)
+            {
+                CursorPos(exitCursor.rectTransform, wNum, 2);
+                KeyDownFlag = true;
+                audioScript.PlayCursorSE();
+            }
+            else if (CursoeVec.x == 0.0f)
+            {
+                KeyDownFlag = false;
+            }
+
+            if (SelectCancel && !KeyDownFlag)
+            {
+                KeyDownFlag = true;
+                zoomCameraScript.ZoomFov(zoomCameraScript.m_Camera, 20.0f, 2.0f);
+                zoomCameraScript.m_Camera.transform.DOMove(new Vector3(0.0f, 0.005f, 1.626f), 1.0f);
+                stageSelectState = 1;
+                exit.transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
+            }
+            if (SelectOK && !KeyDownFlag)
+            {
+                if (exitCursor.transform.localPosition.x == -423.0f)
+                {
+                    FadeManager.Instance.LoadScene("TitleScene", 1.0f);
+                }
+                else if (exitCursor.transform.localPosition.x == 227.0f)
+                {
+                    KeyDownFlag = true;
+                    zoomCameraScript.ZoomFov(zoomCameraScript.m_Camera, 20.0f, 2.0f);
+                    zoomCameraScript.m_Camera.transform.DOMove(new Vector3(0.0f, 0.005f, 1.626f), 1.0f);
+                    stageSelectState = 1;
+                    exit.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+                }
+            }
+        }
+        else if(isScale)
+        {
+            ScaleUI(exit.gameObject, fadespeed, isScale, ScaleState.In);
+            Debug.Log(exit.transform.localScale);
+            if (exit.transform.localScale.x >= 1.0f)
+            {
+                isScale = false;
+            }
+        }
     }
 }
 
