@@ -1944,7 +1944,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 0
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 0.0010461807
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -2107,6 +2107,10 @@ MonoBehaviour:
   jumpPower: 7.5
   jumpDebug: 1
   tearSpeed: 2
+  holdTime: 2.5
+  knockBackForce: 3
+  invincibleDuration: 1
+  invincibleCycleTime: 0.1
 --- !u!114 &1842325426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2180,6 +2184,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 0546a33a-e689-4c4b-87fd-3125b1e008bf
     m_ActionName: Menu/Cancel[/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2a9b7783-2ffd-4b51-8752-26df0e8fc6c4
+    m_ActionName: Player/Camera
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: PlayerInput
   m_DefaultActionMap: Player

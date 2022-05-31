@@ -6,11 +6,18 @@ public class MoveTetubo : MonoBehaviour
 {
     [SerializeField] float speed = 5.0f;
     [SerializeField] float waitTime = 3.0f;
+    
+    [Header("??????")]
+    [SerializeField] float force = 5.0f;
+    float maxspeed ;
+    float startspeed;
 
     GameObject platform, objA, objB;
     Vector3 posA, posB, velocity;
     Rigidbody rb;
-
+    
+    private bool playSE = true;
+    
     private bool move = true;
 
     bool moveForward = true;
@@ -23,24 +30,35 @@ public class MoveTetubo : MonoBehaviour
         objB = transform.GetChild(2).gameObject;
 
         velocity = new Vector3(0, speed, 0);
+        maxspeed = speed * 10;
+        startspeed = speed;
     }
 
+    Vector3 dest;
+    
     void FixedUpdate()
     {
-        Vector3 dest;
-        
         posA = objA.transform.position;
         posB = objB.transform.position;
 
         if (moveForward)
         {
             dest = posA;
-            
+            speed += force;
+
+            if (speed>maxspeed)
+            {
+                speed = maxspeed;
+            }
         }
         else
         {
             dest = posB;
-            
+            speed -= speed;
+            if (speed < startspeed)
+            {
+                speed = startspeed;
+            }
         }
 
         if (((platform.transform.position == posA && moveForward) || (platform.transform.position == posB && !moveForward)) && move)
@@ -52,11 +70,16 @@ public class MoveTetubo : MonoBehaviour
         if (move)
         {
             platform.transform.position = Vector3.MoveTowards(platform.transform.position, dest, speed * Time.fixedDeltaTime);
-            GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>().PlayBarSE();
+            
+            if (playSE)
+            {
+                GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>().PlayBarSE();
+                playSE = false;
+            }
         }
         else
         {
-            
+            playSE = true;
         }
     }
 
@@ -67,6 +90,12 @@ public class MoveTetubo : MonoBehaviour
         moveForward = !moveForward;
         move = true;
     }
+    
+    public void StopMove()
+    {
+        StartCoroutine("HoldPosition");
+        move = false;
+    }
 
     private void OnCollisionEnter(Collision other)
     {
@@ -75,7 +104,7 @@ public class MoveTetubo : MonoBehaviour
             StartCoroutine("HoldPosition");
             move = false;
         }
-        
+
         if (other.gameObject.tag == "Player")
         {
             if (this.transform.eulerAngles.z == 0.0f || this.transform.eulerAngles.z == 180.0f)
@@ -93,7 +122,7 @@ public class MoveTetubo : MonoBehaviour
                 {
                     dir = Random.Range(-1.0f, 1.0f);
                 }
-            
+
                 other.gameObject.transform.position = new Vector3(other.gameObject.transform.position.x + (Mathf.Sign(dir) * 1.0f), other.gameObject.transform.position.y, 0.0f);
             }
         }

@@ -497,6 +497,9 @@ public class TapeScript : MonoBehaviour
         if (blockScript != null)
         {
             blockScript.SetNotHolding();
+            
+            Instantiate(GameObject.FindGameObjectWithTag("EffectManager").GetComponent<EffectManager>().GetTapeEffect(), this.transform.position, Quaternion.identity);
+            
             blockScript.gameObject.transform.parent = null;
         }
         

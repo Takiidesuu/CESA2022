@@ -285,7 +285,7 @@ public class AudioManager : MonoBehaviour
         PlaySE(resultSE, resultVolume);
     }
 
-    public void PlayGmeOverSE()
+    public void PlayGameOverSE()
     {
         PlaySE(gameoverSE, gameoverVolume);
     }

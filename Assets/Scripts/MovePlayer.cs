@@ -94,8 +94,6 @@ public class MovePlayer : MonoBehaviour
     
     public void GiveScript(TapeScript tapeScript, float rotation)
     {
-        tapeHold = tapeScript;
-        
         if (rotation == 0.0f)
         {
             tapeDirection = 0;
@@ -630,7 +628,8 @@ public class MovePlayer : MonoBehaviour
     {
         if (other.gameObject.tag == "Tape")
         {
-            tapeHold = other.gameObject.transform.parent.gameObject.GetComponent<TapeScript>();
+            Debug.Log("enter");
+            tapeHold = other.gameObject.GetComponent<TapeScript>();
         }
         
     }
@@ -659,11 +658,13 @@ public class MovePlayer : MonoBehaviour
                 case "DownPoint":
                 case "LeftPoint":
                 case "RightPoint":
-                    if (!tapeHold || tapeHold.gameObject.transform.root.position.z >= other.gameObject.transform.root.transform.position.z)
+                    if (tapeHold != null)
                     {
-                        tapeHold = other.gameObject.transform.parent.gameObject.GetComponent<TapeScript>();
-                        tapeHold.SetDirection(direction);
-                        inRange = true;
+                        if (!tapeHold || tapeHold.gameObject.transform.root.position.z >= other.gameObject.transform.root.transform.position.z)
+                        {
+                            tapeHold.SetDirection(direction);
+                            inRange = true;
+                        }
                     }
                 break;
             }
@@ -680,7 +681,7 @@ public class MovePlayer : MonoBehaviour
                 inRange = false;
                 StopPull();
                 tapeHold = null;
-                break;
+            break;
         }
     }
     

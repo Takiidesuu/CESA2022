@@ -242,6 +242,7 @@ public class InputManager : MonoBehaviour
         {
             inputControls.Player.Disable();
             inputControls.UI.Enable();
+            inputControls.UI.Pause.Disable();
         }
         else
         {

@@ -38,6 +38,9 @@ public class ClearInfoScript : MonoBehaviour
     
     public void CreateSave()
     {
+        scores.Clear();
+        scores = new List<ClearInfo>();
+        
         for (int world = 1; world < 6; world++)
         {
             for (int stage = 1; stage < 6; stage++)
