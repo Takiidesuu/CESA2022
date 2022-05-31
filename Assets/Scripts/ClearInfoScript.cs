@@ -21,6 +21,13 @@ public class ClearInfoScript : MonoBehaviour
         stageNumber = sNum;
     }
     
+    public int GetCollectedStoneNumber(int wNum, int sNum)
+    {
+        var index = ((wNum - 1)) * 5 + (sNum - 1);
+        
+        return scores[index].StoneNum;
+    }
+    
     public void NextStageNum()
     {
         if (stageNumber < 5)
