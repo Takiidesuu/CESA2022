@@ -236,18 +236,8 @@ public class InputManager : MonoBehaviour
 
     public void SwitchToGameOver()
     {
-        gameoverSwitch = !gameoverSwitch;
-
-        if (gameoverSwitch)
-        {
-            inputControls.Player.Disable();
-            inputControls.UI.Enable();
-            inputControls.UI.Pause.Disable();
-        }
-        else
-        {
-            inputControls.Player.Enable();
-            inputControls.UI.Disable();
-        }
+        inputControls.Player.Disable();
+        inputControls.UI.Enable();
+        inputControls.UI.Pause.Disable();
     }
 }
