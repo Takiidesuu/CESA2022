@@ -80,6 +80,7 @@ public class MovePlayer : MonoBehaviour
             if (stoneObj[a] == null)
             {
                 stoneObj[a] = stoneOb;
+                Debug.Log(a + " ");
                 break;
             }
         }
